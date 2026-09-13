@@ -36,7 +36,7 @@ export function DataTable({ state, dispatch, interactive }: Props) {
     dispatch({ type: "ADD_ROW" });
   };
 
-  const weak = tableHint(s);
+  const weak = interactive ? tableHint(s) : null;
   const lastId = s.table[s.table.length - 1]?.id;
 
   return (

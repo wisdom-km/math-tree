@@ -10,7 +10,7 @@ const W = 1380;
 const H = 700;
 const CX = 690;
 const CY = 350;
-const R_PX = 260;
+const R_PX = 235;
 
 interface Props {
   state: State;
@@ -49,10 +49,10 @@ export function ExtensionStage({ state, dispatch, interactive }: Props) {
             C = {fmt2(exactC(s))} cm
           </text>
           <text className="svg-label" x={W - 60} y={170} textAnchor="end">
-            相差 {fmt2(approx.gap)} cm · P{n} ÷ d = {approx.ratio.toFixed(4)}
+            相差 {approx.gap < 0.01 ? approx.gap.toFixed(4) : fmt2(approx.gap)} cm · P{n} ÷ d = {approx.ratio.toFixed(4)}
           </text>
           {sq && (
-            <text className="svg-num" x={W - 60} y={H - 60} textAnchor="end" fill="var(--c-warn)">
+            <text className="svg-num" x={W / 2} y={H - 24} textAnchor="middle" fill="var(--c-warn)">
               正方形周长 4d = {fmt2(squarePerimeter(s))} cm · 圆周长 πd ≈ 3.14 × {s.d.toFixed(1)} = {fmt2(3.14 * s.d)} cm
             </text>
           )}

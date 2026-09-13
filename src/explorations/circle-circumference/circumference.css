@@ -209,6 +209,8 @@
 .hit {
   fill: transparent;
   stroke: none;
+  pointer-events: all;
+  cursor: grab;
 }
 .radius-line {
   stroke: var(--c-radius);
@@ -359,7 +361,7 @@
   background: #f4f7ff;
 }
 .live-formula .formula {
-  font-size: var(--fs-num-lg);
+  font-size: 2rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   line-height: 1.5;

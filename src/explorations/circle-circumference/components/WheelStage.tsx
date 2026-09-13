@@ -48,7 +48,7 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
   // 手势状态（不进单一数据源：只是指针簿记）
   const wheelPtr = useRef<{ id: number; lastX: number } | null>(null);
   const groundPtr = useRef<{ id: number; lastX: number } | null>(null);
-  const handlePtr = useRef<{ id: number; side: "left" | "right" } | null>(null);
+  const handlePtr = useRef<{ id: number; side: "left" | "right"; centerX: number } | null>(null);
   const [activeHandle, setActiveHandle] = useState<"left" | "right" | null>(null);
 
   const rollBy = (dxPx: number, sign: 1 | -1) => {
@@ -108,7 +108,8 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
   const onHandleDown = (side: "left" | "right") => (e: ReactPointerEvent<SVGElement>) => {
     if (!interactive || handlePtr.current) return;
     e.currentTarget.setPointerCapture(e.pointerId);
-    handlePtr.current = { id: e.pointerId, side };
+    // 改 d 会把轮心拉回起点；以按下时的轮心为参照算新直径，手指移动量与 d 变化一致
+    handlePtr.current = { id: e.pointerId, side, centerX: cx };
     frozenScale.current = scale;
     setActiveHandle(side);
     dispatch({ type: "BEGIN_DRAG_D" });
@@ -119,8 +120,7 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
     const svg = ownerSvg(e);
     if (!svg) return;
     const x = svgPoint(svg, e).x;
-    // 改 d 会把轮心拉回起点，用起点做圆心算新直径
-    const half = Math.abs(x - X0) / (frozenScale.current ?? scale);
+    const half = Math.abs(x - p.centerX) / (frozenScale.current ?? scale);
     const d = Math.min(D_MAX, Math.max(D_MIN, half * 2));
     dispatch({ type: "DRAG_D", d });
   };
@@ -162,17 +162,19 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
       {rolledPx > 0 && <rect className="rolled-band" x={X0} y={GROUND_Y - 6} width={rolledPx} height={16} />}
       {locked && (
         <>
-          <line className="rolled-end" x1={X0} y1={GROUND_Y - 40} x2={X0} y2={GROUND_Y + 30} />
-          <line className="rolled-end" x1={X0 + rolledPx} y1={GROUND_Y - 40} x2={X0 + rolledPx} y2={GROUND_Y + 30} />
-          <text className="svg-num arc" x={X0} y={GROUND_Y - 52} textAnchor="middle">
+          <line className="rolled-end" x1={X0} y1={GROUND_Y - 30} x2={X0} y2={GROUND_Y + 70} />
+          <line className="rolled-end" x1={X0 + rolledPx} y1={GROUND_Y - 30} x2={X0 + rolledPx} y2={GROUND_Y + 70} />
+          <text className="svg-num arc" x={X0} y={GROUND_Y + 100} textAnchor="middle">
             0
           </text>
-          <text className="svg-num arc" x={X0 + rolledPx} y={GROUND_Y - 52} textAnchor="middle">
+          <text className="svg-num arc" x={X0 + rolledPx} y={GROUND_Y + 100} textAnchor="middle">
             {fmt2(C)}
           </text>
-          <text className="svg-label" x={X0 + rolledPx / 2} y={GROUND_Y + 110} textAnchor="middle">
-            这一圈的长是 <tspan className="svg-num arc">{fmt2(C)}</tspan> cm
-          </text>
+          {!showContrast && (
+            <text className="svg-label" x={X0 + rolledPx / 2} y={GROUND_Y + 160} textAnchor="middle">
+              这一圈的长是 <tspan className="svg-num arc">{fmt2(C)}</tspan> cm
+            </text>
+          )}
         </>
       )}
 
@@ -180,7 +182,7 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
       {showContrast && (
         <>
           <rect className="rolled-band" x={X0} y={GROUND_Y - 6} width={C * scale} height={16} />
-          <text className="svg-label" x={X0 + (C * scale) / 2} y={GROUND_Y + 110} textAnchor="middle">
+          <text className="svg-label" x={X0 + (C * scale) / 2} y={GROUND_Y + 160} textAnchor="middle">
             滚一圈量得 <tspan className="svg-num arc">{fmt2(C)}</tspan> cm
           </text>
           <line
@@ -213,8 +215,8 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
           </g>
         );
       })}
-      <text className="svg-label muted" x={STAGE_W - 20} y={GROUND_Y - 16} textAnchor="end">
-        单位：cm
+      <text className="svg-label muted" x={X0 - 60} y={GROUND_Y + 54} textAnchor="end">
+        cm
       </text>
 
       {/* 红点印记 */}
@@ -225,7 +227,7 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
 
       {/* 轮子 */}
       <g transform={`translate(${cx} ${cy})`}>
-        {/* 满圈脉冲动画用 key 重启；命中区放在外面，避免捕获指针的元素被重挂载而丢 pointerup */}
+        {/* 满圈脉冲动画用 key 重启；命中区不放在这个组里，避免捕获指针的元素被重挂载而丢 pointerup */}
         <g className={`wheel-group ${wiggle ? "wiggle" : ""} ${locked ? "pulse" : ""}`} key={`${s.rollCount}-${locked}`}>
           <circle className="wheel" r={rPx} />
           <circle r={6} fill="var(--c-wheel-stroke)" />
@@ -233,42 +235,22 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
             O
           </text>
         </g>
-        {/* 命中区：整个轮面 */}
-        <circle
-          className="hit"
-          r={Math.max(rPx, 32)}
-          onPointerDown={onWheelDown}
-          onPointerMove={onWheelMove}
-          onPointerUp={onWheelUp}
-          onPointerCancel={onWheelUp}
-          onLostPointerCapture={onWheelUp}
-        />
       </g>
 
-      {/* 直径（水平，两端拖点） */}
+      {/* 直径（水平） */}
       <line className="diameter" x1={cx - rPx} y1={cy} x2={cx + rPx} y2={cy} />
-      <text className="svg-num" x={cx} y={cy - 16} textAnchor="middle" fill="var(--c-diameter)">
+      <text className="svg-num" x={cx} y={cy - rPx - 22} textAnchor="middle" fill="var(--c-diameter)">
         d = {s.d.toFixed(1)} cm
       </text>
-      {(["left", "right"] as const).map((side) => {
-        const hx = side === "left" ? cx - rPx : cx + rPx;
-        return (
-          <g key={side}>
-            <circle className={`diameter-handle ${activeHandle === side ? "active" : ""}`} cx={hx} cy={cy} r={18} />
-            <circle
-              className="hit"
-              cx={hx}
-              cy={cy}
-              r={34}
-              onPointerDown={onHandleDown(side)}
-              onPointerMove={onHandleMove}
-              onPointerUp={onHandleUp}
-              onPointerCancel={onHandleUp}
-              onLostPointerCapture={onHandleUp}
-            />
-          </g>
-        );
-      })}
+      {(["left", "right"] as const).map((side) => (
+        <circle
+          key={side}
+          className={`diameter-handle ${activeHandle === side ? "active" : ""}`}
+          cx={side === "left" ? cx - rPx : cx + rPx}
+          cy={cy}
+          r={18}
+        />
+      ))}
 
       {/* 红点 A */}
       <circle className="red-point" cx={redX} cy={redY} r={11} />
@@ -288,6 +270,33 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
           </text>
         </g>
       )}
+
+      {/* 命中区（最上层）：整个轮面含直径、红点、手指提示；两端拖点的命中区再叠在其上 */}
+      <circle
+        className="hit"
+        cx={cx}
+        cy={cy}
+        r={rPx + 40}
+        onPointerDown={onWheelDown}
+        onPointerMove={onWheelMove}
+        onPointerUp={onWheelUp}
+        onPointerCancel={onWheelUp}
+        onLostPointerCapture={onWheelUp}
+      />
+      {(["left", "right"] as const).map((side) => (
+        <circle
+          key={side}
+          className="hit"
+          cx={side === "left" ? cx - rPx : cx + rPx}
+          cy={cy}
+          r={34}
+          onPointerDown={onHandleDown(side)}
+          onPointerMove={onHandleMove}
+          onPointerUp={onHandleUp}
+          onPointerCancel={onHandleUp}
+          onLostPointerCapture={onHandleUp}
+        />
+      ))}
 
       {/* 进度 */}
       <text className="svg-label muted" x={STAGE_W - 20} y={40} textAnchor="end">

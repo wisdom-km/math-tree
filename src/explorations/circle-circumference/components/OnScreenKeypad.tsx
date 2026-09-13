@@ -14,7 +14,9 @@ export interface KeypadProps {
 
 /** 屏幕大数字键盘（0–9、小数点、退格、确定），不依赖物理键盘。 */
 export function OnScreenKeypad({ title, unit, initial, min, max, decimals = 1, onConfirm, onCancel }: KeypadProps) {
-  const [text, setText] = useState<string>(initial === null || initial === undefined ? "" : String(initial));
+  // 从空白开始输入；当前值只作灰色提示，避免在旧值后面续输
+  const [text, setText] = useState<string>("");
+  const placeholder = initial === null || initial === undefined ? "" : String(initial);
 
   const value = text === "" || text === "." ? NaN : parseFloat(text);
   const inRange =
@@ -41,8 +43,16 @@ export function OnScreenKeypad({ title, unit, initial, min, max, decimals = 1, o
       <div className="keypad" role="dialog" aria-label={title}>
         <div className="kp-title">{title}</div>
         <div className={`kp-display ${text && !inRange ? "invalid" : ""}`} aria-live="polite">
-          {text || "\u00a0"}
-          {unit && text && <span className="muted"> {unit}</span>}
+          {text ? (
+            <>
+              {text}
+              {unit && <span className="muted"> {unit}</span>}
+            </>
+          ) : (
+            <span className="muted" style={{ opacity: 0.5 }}>
+              {placeholder || "\u00a0"}
+            </span>
+          )}
         </div>
         <div className="kp-grid">
           {["7", "8", "9", "4", "5", "6", "1", "2", "3"].map((k) => (
