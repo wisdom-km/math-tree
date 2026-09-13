@@ -53,6 +53,7 @@ export function CircleCircumference({ exploration }: ExplorationProps) {
   const [confirmReset, setConfirmReset] = useState(false);
   const [dKeypad, setDKeypad] = useState(false);
   const [contextOpen, setContextOpen] = useState(true);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   useEvidenceSync(state, exploration.id, epoch);
 
@@ -163,12 +164,21 @@ export function CircleCircumference({ exploration }: ExplorationProps) {
           <>
             <PatternFillIn state={s} dispatch={dispatch} interactive />
             <DataTable state={s} dispatch={dispatch} interactive={false} />
+            {showFormula && <LiveFormula state={s} dispatch={dispatch} interactive={false} compact />}
           </>
         );
       case 6:
         return (
           <>
             <LiveFormula state={s} dispatch={dispatch} />
+            <button className="btn" aria-pressed={historyOpen} onClick={() => setHistoryOpen(!historyOpen)}>
+              数学史：周三径一
+            </button>
+            {historyOpen && (
+              <div className="history-note">
+                古人说「周三径一」：周长大约是直径的 3 倍。祖冲之把 π 精确到小数点后 7 位。
+              </div>
+            )}
             <DataTable state={s} dispatch={dispatch} interactive={false} />
           </>
         );
