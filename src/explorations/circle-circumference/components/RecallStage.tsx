@@ -24,7 +24,11 @@ export function RecallStage({ state, dispatch, interactive }: Props) {
 
   const onDown = (e: ReactPointerEvent<SVGElement>) => {
     if (!interactive || ptr.current !== null) return;
-    e.currentTarget.setPointerCapture(e.pointerId);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      /* 合成事件无真实指针 */
+    }
     ptr.current = e.pointerId;
   };
   const onMove = (e: ReactPointerEvent<SVGElement>) => {

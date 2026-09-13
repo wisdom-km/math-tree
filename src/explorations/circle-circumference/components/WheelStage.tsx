@@ -48,8 +48,18 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
   // 手势状态（不进单一数据源：只是指针簿记）
   const wheelPtr = useRef<{ id: number; lastX: number } | null>(null);
   const groundPtr = useRef<{ id: number; lastX: number } | null>(null);
-  const handlePtr = useRef<{ id: number; side: "left" | "right"; centerX: number } | null>(null);
-  const [activeHandle, setActiveHandle] = useState<"left" | "right" | null>(null);
+  /** 两端拖点各自可被一个指针持有（两个孩子各拖一端） */
+  const handlePtrs = useRef<Map<number, { side: "left" | "right"; centerX: number }>>(new Map());
+  const [activeHandles, setActiveHandles] = useState<Set<"left" | "right">>(new Set());
+
+  /** setPointerCapture 对合成事件会抛 InvalidPointerId，这里兜住 */
+  const capture = (e: ReactPointerEvent<SVGElement>) => {
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      /* 无真实指针（测试合成事件）时忽略 */
+    }
+  };
 
   const rollBy = (dxPx: number, sign: 1 | -1) => {
     const dxCm = dxPx / scale;
@@ -61,7 +71,7 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
     if (!interactive || s.rollLocked || wheelPtr.current) return;
     const svg = ownerSvg(e);
     if (!svg) return;
-    e.currentTarget.setPointerCapture(e.pointerId);
+    capture(e);
     wheelPtr.current = { id: e.pointerId, lastX: svgPoint(svg, e).x };
     dispatch({ type: "ROLL_START" });
   };
@@ -85,7 +95,7 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
     if (!interactive || s.rollLocked || groundPtr.current) return;
     const svg = ownerSvg(e);
     if (!svg) return;
-    e.currentTarget.setPointerCapture(e.pointerId);
+    capture(e);
     groundPtr.current = { id: e.pointerId, lastX: svgPoint(svg, e).x };
     dispatch({ type: "ROLL_START" });
   };
@@ -106,17 +116,18 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
 
   /* ---- 直径两端拖点 ---- */
   const onHandleDown = (side: "left" | "right") => (e: ReactPointerEvent<SVGElement>) => {
-    if (!interactive || handlePtr.current) return;
-    e.currentTarget.setPointerCapture(e.pointerId);
+    if (!interactive) return;
+    if ([...handlePtrs.current.values()].some((h) => h.side === side)) return;
+    capture(e);
     // 改 d 会把轮心拉回起点；以按下时的轮心为参照算新直径，手指移动量与 d 变化一致
-    handlePtr.current = { id: e.pointerId, side, centerX: cx };
-    frozenScale.current = scale;
-    setActiveHandle(side);
-    dispatch({ type: "BEGIN_DRAG_D" });
+    if (handlePtrs.current.size === 0) frozenScale.current = scale;
+    handlePtrs.current.set(e.pointerId, { side, centerX: cx });
+    setActiveHandles(new Set([...activeHandles, side]));
+    if (handlePtrs.current.size === 1) dispatch({ type: "BEGIN_DRAG_D" });
   };
   const onHandleMove = (e: ReactPointerEvent<SVGElement>) => {
-    const p = handlePtr.current;
-    if (!p || p.id !== e.pointerId) return;
+    const p = handlePtrs.current.get(e.pointerId);
+    if (!p) return;
     const svg = ownerSvg(e);
     if (!svg) return;
     const x = svgPoint(svg, e).x;
@@ -125,11 +136,16 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
     dispatch({ type: "DRAG_D", d });
   };
   const onHandleUp = (e: ReactPointerEvent<SVGElement>) => {
-    if (handlePtr.current?.id !== e.pointerId) return;
-    handlePtr.current = null;
-    frozenScale.current = null;
-    setActiveHandle(null);
-    dispatch({ type: "END_DRAG_D" });
+    const p = handlePtrs.current.get(e.pointerId);
+    if (!p) return;
+    handlePtrs.current.delete(e.pointerId);
+    const next = new Set(activeHandles);
+    next.delete(p.side);
+    setActiveHandles(next);
+    if (handlePtrs.current.size === 0) {
+      frozenScale.current = null;
+      dispatch({ type: "END_DRAG_D" });
+    }
   };
 
   /* ---- 刻度 ---- */
@@ -245,7 +261,7 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
       {(["left", "right"] as const).map((side) => (
         <circle
           key={side}
-          className={`diameter-handle ${activeHandle === side ? "active" : ""}`}
+          className={`diameter-handle ${activeHandles.has(side) ? "active" : ""}`}
           cx={side === "left" ? cx - rPx : cx + rPx}
           cy={cy}
           r={18}
