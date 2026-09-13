@@ -1,0 +1,232 @@
+/* 全局样式。字号以 1920×1080 为基准：1rem = 16px，随视口宽度等比缩放。
+   大屏触摸硬要求（需求 4.1 / 交互稿 3.3）：
+   - 按钮与拖点命中区 ≥ 48px  → --touch: 3rem
+   - 主舞台数字 ≥ 28px         → --fs-num: 1.75rem
+   - 正文说明 ≥ 24px           → --fs-body: 1.5rem
+   - 步骤条标签 ≥ 18px         → --fs-small: 1.125rem
+   无悬停依赖：所有状态用 pressed / selected / disabled 表达。 */
+
+:root {
+  font-size: clamp(12px, calc(100vw / 120), 22px);
+
+  --touch: 3rem;
+  --fs-num: 1.75rem;
+  --fs-num-lg: 2.5rem;
+  --fs-body: 1.5rem;
+  --fs-small: 1.125rem;
+  --fs-title: 2rem;
+
+  --c-bg: #f6f7f9;
+  --c-panel: #ffffff;
+  --c-text: #1d232b;
+  --c-muted: #5c6672;
+  --c-line: #d6dbe1;
+  --c-primary: #1e5eff;
+  --c-primary-ink: #ffffff;
+  --c-wheel-stroke: #1f4aa8;
+  --c-wheel-fill: rgba(80, 140, 255, 0.28);
+  --c-diameter: #f28c1e;
+  --c-radius: #9aa3ad;
+  --c-red: #e0262d;
+  --c-red-soft: rgba(224, 38, 45, 0.45);
+  --c-ground: #3a4149;
+  --c-arc: #12a58f;
+  --c-arc-soft: rgba(18, 165, 143, 0.28);
+  --c-area: rgba(242, 140, 30, 0.25);
+  --c-warn: #b3540a;
+  --c-ok: #0f8a5f;
+  --c-danger: #b42318;
+
+  font-family:
+    "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", "Helvetica Neue", Arial,
+    sans-serif;
+  color: var(--c-text);
+  background: var(--c-bg);
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+  font-size: var(--fs-body);
+  line-height: 1.35;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: 0;
+  background: none;
+  touch-action: manipulation;
+}
+
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--c-primary);
+  outline-offset: 2px;
+}
+
+/* 通用按钮：三态 default / pressed(:active) / selected([aria-pressed=true]) / disabled */
+.btn {
+  min-height: var(--touch);
+  min-width: var(--touch);
+  padding: 0 1.25rem;
+  border-radius: 0.5rem;
+  border: 2px solid var(--c-line);
+  background: var(--c-panel);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+.btn:active {
+  transform: translateY(1px);
+  background: #e9edf3;
+}
+.btn[aria-pressed="true"],
+.btn.is-selected {
+  border-color: var(--c-primary);
+  background: #e6eeff;
+  color: var(--c-primary);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn.primary {
+  background: var(--c-primary);
+  border-color: var(--c-primary);
+  color: var(--c-primary-ink);
+}
+.btn.primary:active {
+  background: #174bd1;
+}
+.btn.danger {
+  border-color: var(--c-danger);
+  color: var(--c-danger);
+}
+.btn.lg {
+  min-height: 4rem;
+  font-size: var(--fs-num);
+  padding: 0 2rem;
+}
+.btn.shake {
+  animation: shake 0.4s;
+}
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+.num {
+  font-size: var(--fs-num);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.muted {
+  color: var(--c-muted);
+}
+
+.panel {
+  background: var(--c-panel);
+  border: 1px solid var(--c-line);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+
+/* 顶层导航 */
+.app-shell {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.app-nav {
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.25rem;
+  background: var(--c-panel);
+  border-bottom: 1px solid var(--c-line);
+}
+.app-nav .brand {
+  font-weight: 800;
+  font-size: var(--fs-title);
+  letter-spacing: 0.02em;
+}
+.app-nav a {
+  color: inherit;
+  text-decoration: none;
+  min-height: var(--touch);
+  display: inline-flex;
+  align-items: center;
+  padding: 0 1rem;
+  border-radius: 0.5rem;
+}
+.app-nav a[aria-current="page"] {
+  background: #e6eeff;
+  color: var(--c-primary);
+}
+.app-nav .spacer {
+  flex: 1;
+}
+.app-main {
+  flex: 1;
+  min-height: 0;
+}
+
+/* 模态 */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 24, 30, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+.modal {
+  background: var(--c-panel);
+  border-radius: 1rem;
+  padding: 2rem;
+  min-width: 30rem;
+  max-width: 60rem;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.25);
+}
+.modal h2 {
+  margin: 0 0 1rem;
+  font-size: var(--fs-title);
+}
+.modal .actions {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}

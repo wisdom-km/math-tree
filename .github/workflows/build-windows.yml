@@ -1,0 +1,68 @@
+name: Build Windows installer
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "是否同时创建 GitHub Release（草稿）"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: 安装前端依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 类型检查与单元测试
+        run: |
+          pnpm typecheck
+          pnpm test
+
+      # tauri-action 会执行 beforeBuildCommand（pnpm build）并打出 nsis + msi。
+      # 不打 tag 只手动触发时：仅上传构件，不建 Release。
+      - name: 打 Windows 安装包
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
+          releaseName: ${{ startsWith(github.ref, 'refs/tags/') && format('数学知识树 {0}', github.ref_name) || '' }}
+          releaseBody: "Windows 安装包（NSIS .exe 与 .msi）。首次运行会静默安装 WebView2 运行时。"
+          releaseDraft: ${{ startsWith(github.ref, 'refs/tags/') || inputs.release == true }}
+          prerelease: false
+          args: --target x86_64-pc-windows-msvc
+
+      - name: 上传构件
+        uses: actions/upload-artifact@v4
+        with:
+          name: math-tree-windows
+          path: |
+            src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
+            src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
+          if-no-files-found: error
