@@ -99,19 +99,19 @@ tests/circle-area-mini.test.ts   5
 | 项 | 结果 |
 | --- | --- |
 | `pnpm test` | **112 通过**（主单 54 + 迷你单 5 + 周长 43 + 内容 10） |
-| `pnpm typecheck` | 通过 |
+| `pnpm typecheck` | 通过（含在 `pnpm build`） |
 | `pnpm build` | 通过 |
-| `cargo check --manifest-path src-tauri/Cargo.toml` | **失败**：本环境 Cargo 1.83 无法解析 lock 里的 `hashbrown 0.17.1`（要 edition2024 / rustc ≥ 1.85）。不要为过 cargo 去乱 pin 依赖；有新 toolchain 再跑 `--locked`。 |
-| Chrome 走查 | 老师模式 0–9 大部分已走；见第 4 节 |
-| PR 标题 / `gh pr ready` | **未做**。更新 PR 请用 `GH_TOKEN=$MATH_TREE_TOKEN gh pr edit / gh pr ready`。**不要 merge。** |
+| `cargo check --locked --manifest-path src-tauri/Cargo.toml` | **通过**：本机 `rustup run stable` 为 rustc **1.97.0**。未改 lock / 未 pin crate。 |
+| Chrome 走查 | 老师模式 0–9 + 第 5 节 B 补测已走；见第 4 节 |
+| PR 标题 / `gh pr ready` | 标题已是「M1：圆的面积探究单（含圆环、方圆迷你探究单）」。走查收尾后 `gh pr ready`。**不要 merge。** |
 
 ### 截图（Agent Store，未进 git）
 
-- `/cursor/stores/bc-63501b5b-bea3-42a0-8931-65e509b06ddc/media/circle-area/01-assembly-rect.png` — 步骤 3 长方形拼合 + 外框 + 尺子
-- `/cursor/stores/bc-63501b5b-bea3-42a0-8931-65e509b06ddc/media/circle-area/02-formula-reveal.png` — 步骤 6 S=πr² 活公式
-- `/cursor/stores/bc-63501b5b-bea3-42a0-8931-65e509b06ddc/media/circle-area/03-ring-or-square.png` — 圆环（**错法对照未点开**，建议重截）
+- `/cursor/stores/bc-63501b5b-bea3-42a0-8931-65e509b06ddc/media/circle-area/01-assembly-rect.png` — 步骤 3 长方形拼合 + 外框 + 尺子（沿用）
+- `/cursor/stores/bc-63501b5b-bea3-42a0-8931-65e509b06ddc/media/circle-area/02-formula-reveal.png` — 步骤 6 S=πr² 活公式（真机重截）
+- `/cursor/stores/bc-63501b5b-bea3-42a0-8931-65e509b06ddc/media/circle-area/03-ring-or-square.png` — 圆环两式 100.48 + 红色错法小圆 50.24（真机重截，错法已点开）
 
-备份：`/tmp/circle-area-shots/`（另有 `04-verify.png`：步骤 7 任务 A「对上了」78.50 / 78.41 / 78.50）。
+备份：Windows `%TEMP%\circle-area-shots\`（02、03）。
 
 ---
 
@@ -124,27 +124,27 @@ tests/circle-area-mini.test.ts   5
 | 1 | 已见 | 步骤 3 仅「剪」wiggle，无自动拼 |
 | 2 | 已见 | 步骤 0 拖长同步格子+算式；错选描边流动。三角形回忆在首次「拆成三角形」弹窗（已拍板第 6 条） |
 | 3 | 已见 | 完整 32 + 不完整 28，不给结论 |
-| 4 | 补测 | 三估值 + 参照正方形 64 已见。举手须先「+ 添加候选」才有 +1/−1（不是 bug） |
+| 4 | 已见 | 三估值 30/45/60 + 参照正方形 64。先「+ 添加候选」50 后出现 +1/−1（不是 bug） |
 | 5 | 已见 | 剪前移/拼禁用；剪后出缝 |
 | 6 | 已见 | 滑块中途停、点「拼」走到 100% |
 | 7 | 已见 | 改 n 清区、表行保留；老师可见 128 |
 | 8 | 已见 | 外框 + 长≈? 宽=? + 点边贴尺。n=8 端头半份凸出为规格接受项 |
 | 9 | 已见 | 两位小数、无噪声 |
-| 10 | 已见 | 三角形锯齿/换行、点一份放大、表头切换、两拼法行可混 |
+| 10 | 已见 | 三角形锯齿/换行、点一份放大、点空白关闭、表头切换、两拼法行可混 |
 | 11 | 已见 | 8/16/32 三行后进步骤 5 |
 | 12 | 已见 | 步骤 5 前无 S=πr²（当步芯片上的 πr 允许） |
 | 13 | 已见 | 「周长」出对照线段而非打叉 |
-| 14 | 已见 | 推导三行 + 活公式 3.14×4×4=50.24 |
+| 14 | 已见 | 推导三行 + 活公式 3.14×4×4=50.24（截图 02） |
 | 15 | 已见 | 「另一条路：拆成三角形」卡 |
-| 16 | 补测 | 任务 A 正确预测已有图「对上了」。未截图：预测 31.4 的周长提示；回看猜测高亮最接近柱 |
-| 17 | 补测 | 任务 B 的 S 按钮在 `tableDToR` 前不渲染。不要把任务 C「① 面积」当成任务 B |
-| 18 | 补测 | 两式同步 100.48、光盘、滑块 0.5–5.5 已见。请点「π(R − r)² 也对吗？」并重截 03 |
+| 16 | 已见 | 任务 A 填 31.4（r=5 的周长）：「预测偏少——你算的可能是周长；r² 是 r × r，不是 r × 2」。对照全班：最接近候选 50（精确 50.24） |
+| 17 | 已见 | 任务 B 在点「d → r」前只有该按钮、无 S；点后才出现「S = ？」。任务 C「① 面积」始终在，不要搞混 |
+| 18 | 已见 | 两式同步 100.48；点开「π(R − r)² 也对吗？」红色小圆 50.24；滑块 0.5–5.5。截图 03 |
 | 19 | 已见 | 0.86 / 1.14 不变；拆三角形；结论 2 与 3.14 |
 | 20 | 已见 | 左周长右面积、同一 r 滑块 |
-| 21 | 补测 | 学生藏「?」、切模式不清表已见。再确认步骤 8 不可进、易混仅步骤 9 |
+| 21 | 已见 | 学生藏「?」与步骤 8；步骤 7 无「周长∥面积」；步骤 9 才出现。切回老师表行 8/16/32 仍在 |
 | 22 | 已见 | 拖柄/主按钮 ≥48px；屏幕键盘 |
 | 23 | 缺口 | 双 pointer 未实机测。代码按 pointerId 捕获 |
-| 24 | 补测 | 重置二次确认已见。建议再撤销一次 r 或表行 |
+| 24 | 已见 | 「确定重置？」出现后点取消，数据仍在。另撤销一次回到步骤 7 |
 | 25 | 缺口 | 未查 SQLite。点「完成探究」应写 `exploration_completed`。标记已问故意不写证据（与周长单一致） |
 | 26 | 已见 | 全 SVG |
 | 27 | 跳过 | 等 PR #3 共用组件，本单已 TODO(area-chain) |
@@ -156,46 +156,29 @@ tests/circle-area-mini.test.ts   5
 
 ### A. 提交已改未推的 UI（若工作区还有）
 
-- `AssemblyStage.tsx`：三角形放大全舞台点空白关闭；换步骤清 zoom
-- `RingExploration.tsx`：R/r 标签错开；光盘按钮文案缩短
-- `circle-area.css`：迷你单右栏按钮竖排、活公式字号缩小
+已在分支上：`4b4475a`（三角形放大点空白关闭；圆环标签与按钮）。本任工作区干净，无需再提交 UI。
 
-若 `git status` 仍有这些文件：中文提交后推送。
+### B. 浏览器补测（老师模式，真机）— 已完成
 
-### B. 浏览器补测（老师模式，真机）
+1. 步骤 7 填 **31.4**：出现「你算的可能是周长；r² 是 r × r，不是 r × 2」。
+2. 任务 B：点「d → r」前无 S 按钮；点后出现「S = ？」。
+3. 步骤 2 加候选 50，步骤 7「对照全班的猜测」标最接近 50。
+4. 圆环点开错法，重截 `03-ring-or-square.png`（两式 100.48 + 红色小圆 50.24）。
+5. 学生模式：步骤 8 与「?」隐藏；步骤 9 前无易混；切回老师表行仍在。
+6. 拆成三角形：点一份放大，点舞台空白关闭。
+7. 重置出现「确定重置？」后取消，数据保留。
 
-1. 步骤 7 再验证一次填 **31.4**，必须出现周长/r² 提示。
-2. 任务 B：确认 S 按钮在点「d → r」之前不出现。
-3. 「对照全班的猜测」：步骤 2 先加候选（如 50）再回看。
-4. 圆环点错法对照，重截 `03-ring-or-square.png`（两式 + 红色小圆同时入镜）。
-5. 学生模式：步骤 8 隐藏；步骤 9 前不能开易混；切回老师数据还在。
-6. 拆成三角形：点一份放大，再点舞台空白，放大层应关掉。
-7. 重置出现确认后取消。
+### C. 测试与构建 — 已完成
 
-截图放到 `/cursor/stores/bc-63501b5b-bea3-42a0-8931-65e509b06ddc/media/circle-area/`（`01` `02` 可沿用；`03` 必须带错法对照）。
-
-### C. 测试与构建
-
-```bash
-pnpm test      # 期望 ≥112
-pnpm build
-cargo check --locked --manifest-path src-tauri/Cargo.toml
-```
+`pnpm test` 112 · `pnpm build` · `cargo check --locked`（rustc 1.97.0）。
 
 ### D. 更新 PR（不要 merge）
 
-```bash
-GH_TOKEN=$MATH_TREE_TOKEN gh pr edit 4 --repo wisdom-km/math-tree \
-  --title "M1：圆的面积探究单（含圆环、方圆迷你探究单）"
-GH_TOKEN=$MATH_TREE_TOKEN gh pr ready 4 --repo wisdom-km/math-tree
-```
-
-PR 正文改成已完成口径 + 第 3、4 节验证结果，并链到本文。
+走查收尾后 `gh pr ready 4 --repo wisdom-km/math-tree`。标题保持「M1：圆的面积探究单（含圆环、方圆迷你探究单）」。
 
 ### E. Agent Store
 
-最终状态写到 `/cursor/stores/bc-63501b5b-bea3-42a0-8931-65e509b06ddc/internal/`。  
-若 `circle-area-handoff.md` 的 frontmatter `subagentId` 不是你的，新建一份并交叉链接，不要覆盖别人的 frontmatter。
+本任状态：`internal/circle-area-pr4-ready.md`（新建，不覆盖 `circle-area-handoff.md` 的 frontmatter）。
 
 ---
 
@@ -203,9 +186,9 @@ PR 正文改成已完成口径 + 第 3、4 节验证结果，并链到本文。
 
 | 问题 | 说明 | 状态 |
 | --- | --- | --- |
-| 三角形放大关不掉 | 换步骤仍留着；点空白不关 | 代码已改，请浏览器确认 |
-| 圆环右栏按钮裁切 | 「光盘」按钮被裁 | 代码已改，请重截 03 |
-| 圆环 R/r 标签重叠 | 内半径文字叠在圆上 | 代码已改 |
+| 三角形放大关不掉 | 换步骤仍留着；点空白不关 | **已确认**：点空白关闭 |
+| 圆环右栏按钮裁切 | 「光盘」按钮被裁 | **已确认**：03 入镜「光盘」「收起错法」 |
+| 圆环 R/r 标签重叠 | 内半径文字叠在圆上 | **已确认**：r 标在内圆左侧、R 在右侧 |
 | 举手找不到 +1/−1 | 须先「+ 添加候选」 | 不是 bug |
 | 任务 B 能在 d→r 前填 S | 误点任务 C | 不是 bug |
 
@@ -245,4 +228,4 @@ PR 正文改成已完成口径 + 第 3、4 节验证结果，并链到本文。
 - 三张截图绝对路径
 - `pnpm test` 用例数
 - 28 条验收表（更新本文第 4 节）
-- 未完成项（cargo / SQLite / 双 pointer / 第 27 条）
+- 未完成项（SQLite / 双 pointer / 第 27 条跳过；cargo 已在 rustc 1.97 通过）
