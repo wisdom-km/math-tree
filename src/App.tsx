@@ -4,6 +4,7 @@ import { SettingsProvider, useSettings } from "@/app/settings";
 import { loadContent } from "@/content/loader";
 import { DbProvider, useDbStatus } from "@/db/context";
 import type { NodeRef } from "@/db/repository";
+import { ExplorationPlaceholder } from "@/explorations/ExplorationPlaceholder";
 import { EXPLORATION_COMPONENTS } from "@/explorations/registry";
 import { KnowledgeTreePage } from "@/tree/KnowledgeTreePage";
 import { RosterPage } from "@/roster/RosterPage";
@@ -41,14 +42,7 @@ function Routes() {
   if (exploreMatch) {
     const exp = content.explorations.find((e) => e.id === exploreMatch[1]);
     const Comp = exp ? EXPLORATION_COMPONENTS[exp.component] : undefined;
-    if (!exp || !Comp) {
-      return (
-        <div className="panel" style={{ margin: "2rem" }}>
-          找不到探究单 <code>{exploreMatch[1]}</code>。
-          <a href={href("/")}>返回知识树</a>
-        </div>
-      );
-    }
+    if (!exp || !Comp) return <ExplorationPlaceholder id={exploreMatch[1]!} params={route.params} />;
     return <Comp exploration={exp} />;
   }
   if (route.path === "/roster") return <RosterPage />;

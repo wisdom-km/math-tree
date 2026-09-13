@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { href, navigate } from "@/app/router";
 import { loadContent, nodeTitle, outgoing } from "@/content/loader";
-import { EDGE_LABEL, type AnyNode, type Edge, type KnowledgeNode } from "@/content/schema";
+import { EDGE_LABEL, type AnyNode, type Edge, type Exploration, type KnowledgeNode } from "@/content/schema";
+import { explorationEntries, playThroughEntry } from "@/explorations/registry";
 import "./tree.css";
 
 const LEVEL_LABEL: Record<string, string> = { L1: "L1 演示", L2: "L2 操作", L3: "L3 探究", 静态图解: "静态图解" };
@@ -15,11 +16,38 @@ function NodeLink({ id, title }: { id: string; title: string }) {
   );
 }
 
+/** 「转化自」边上的沿链播放入口：目标旧知识挂了转化链探究单时出现 */
+function PlayThroughEntries({ edges, index }: { edges: Edge[]; index: ReturnType<typeof loadContent> }) {
+  const seen = new Set<string>();
+  const items: { exp: Exploration; label: string; params?: Record<string, string>; badge?: string }[] = [];
+  for (const e of edges) {
+    for (const exp of index.explorationsByNode.get(e.to) ?? []) {
+      if (seen.has(exp.id)) continue;
+      const entry = playThroughEntry(exp);
+      if (!entry) continue;
+      seen.add(exp.id);
+      items.push({ exp, ...entry });
+    }
+  }
+  if (items.length === 0) return null;
+  return (
+    <div className="explorations">
+      {items.map((it) => (
+        <a key={it.exp.id} className="btn primary lg" href={href(`/explore/${it.exp.id}`, it.params)}>
+          {it.label}
+          {it.badge && <span className="badge">{it.badge}</span>}
+        </a>
+      ))}
+    </div>
+  );
+}
+
 function EdgeList({ title, edges, index }: { title: string; edges: Edge[]; index: ReturnType<typeof loadContent> }) {
   if (edges.length === 0) return null;
   return (
     <section className="detail-section">
       <h3>{title}</h3>
+      {title === EDGE_LABEL.transformsFrom && <PlayThroughEntries edges={edges} index={index} />}
       <ul>
         {edges.map((e, i) => {
           const target = e.from === undefined ? e.to : e.to;
@@ -73,12 +101,14 @@ function NodeDetail({ node }: { node: AnyNode }) {
       {explorations.length > 0 && (
         <section className="detail-section explorations">
           <h3>探究单</h3>
-          {explorations.map((e) => (
-            <a key={e.id} className="btn primary lg" href={href(`/explore/${e.id}`)}>
-              {e.title}
-              <span className="badge">{e.primaryNode === node.id ? "主挂" : "同屏覆盖"} · {e.level}</span>
-            </a>
-          ))}
+          {explorations.flatMap((e) =>
+            explorationEntries(e, node.id).map((entry, i) => (
+              <a key={`${e.id}-${i}`} className="btn primary lg" href={href(`/explore/${e.id}`, entry.params)}>
+                {entry.label}
+                {entry.badge && <span className="badge">{entry.badge}</span>}
+              </a>
+            )),
+          )}
         </section>
       )}
 
@@ -201,6 +231,7 @@ export function KnowledgeTreePage({ selectedId }: { selectedId: string | null })
                     <button className="tree-node" aria-pressed={l.id === selectedId} onClick={() => navigate("/", { node: l.id })}>
                       <span className="node-id">{l.id}</span>
                       <span className="node-title">{l.title}</span>
+                      {index.explorationsByNode.has(l.id) && <span className="dot" title="有探究单" />}
                     </button>
                   </li>
                 ))}
