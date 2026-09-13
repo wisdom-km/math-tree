@@ -1,7 +1,21 @@
 import type { CanvasCtx, Pt } from "@/shared/shape-canvas";
 
-/** 底 / 长的青绿标注线，标签在线下方 */
-export function BaseLine({ ctx, from, to, label, offset = 0.55 }: { ctx: CanvasCtx; from: Pt; to: Pt; label?: string; offset?: number }) {
+/** 底 / 长的青绿标注线。默认标签在线下方；上底这类在图形上方的边把 labelBelow 设为 false。 */
+export function BaseLine({
+  ctx,
+  from,
+  to,
+  label,
+  offset = 0.55,
+  labelBelow = true,
+}: {
+  ctx: CanvasCtx;
+  from: Pt;
+  to: Pt;
+  label?: string;
+  offset?: number;
+  labelBelow?: boolean;
+}) {
   const y = Math.min(from.y, to.y) - offset;
   const a = ctx.toPx({ x: from.x, y });
   const b = ctx.toPx({ x: to.x, y });
@@ -9,7 +23,7 @@ export function BaseLine({ ctx, from, to, label, offset = 0.55 }: { ctx: CanvasC
     <g>
       <line className="sc-base-line" x1={a.x} y1={a.y} x2={b.x} y2={b.y} />
       {label && (
-        <text className="sc-num base" x={(a.x + b.x) / 2} y={a.y + 40} textAnchor="middle">
+        <text className="sc-num base" x={(a.x + b.x) / 2} y={a.y + (labelBelow ? 36 : -14)} textAnchor="middle">
           {label}
         </text>
       )}
@@ -17,7 +31,7 @@ export function BaseLine({ ctx, from, to, label, offset = 0.55 }: { ctx: CanvasC
   );
 }
 
-/** 高：橙色虚线 + 直角标记（在 foot 处），标签在线右侧 */
+/** 高：橙色虚线 + 直角标记（在 foot 处），标签在线外侧以免压到图形 */
 export function HeightLine({ ctx, foot, top, label, side = 1 }: { ctx: CanvasCtx; foot: Pt; top: Pt; label?: string; side?: 1 | -1 }) {
   const f = ctx.toPx(foot);
   const t = ctx.toPx(top);
@@ -27,7 +41,7 @@ export function HeightLine({ ctx, foot, top, label, side = 1 }: { ctx: CanvasCtx
       <line className="sc-height-line" x1={f.x} y1={f.y} x2={t.x} y2={t.y} />
       <path className="sc-right-angle" d={`M${f.x} ${f.y - m} h${m * side} v${m}`} />
       {label && (
-        <text className="sc-num height" x={f.x + 16 * side} y={(f.y + t.y) / 2 + 10} textAnchor={side === 1 ? "start" : "end"}>
+        <text className="sc-num height" x={f.x + 28 * side} y={(f.y + t.y) / 2 + 10} textAnchor={side === 1 ? "start" : "end"}>
           {label}
         </text>
       )}

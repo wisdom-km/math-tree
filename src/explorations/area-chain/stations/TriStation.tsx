@@ -1,5 +1,5 @@
 import { ShapeCanvas, type HandleSpec, type ShapeSpec } from "@/shared/shape-canvas";
-import type { TriangleKind } from "@/shared/shape-canvas/geometry";
+import { bounds, type TriangleKind } from "@/shared/shape-canvas/geometry";
 import { BaseLine, HeightLine, Ruler, RulerButton } from "../components/annotations";
 import { Num, fmt } from "../components/Num";
 import { fillFeedback, triDerived } from "../model/derived";
@@ -47,6 +47,8 @@ export function TriStage({ state, dispatch, embedded, interactive, onAssemble, a
   const showBase = st.rulers.includes("base");
   const showHeight = st.rulers.includes("height");
   const footOutside = d.apexX > d.a || d.apexX < 0;
+  const paraBox = bounds([d.asm.parallelogram]);
+  const heightX = paraBox.xMax;
 
   return (
     <ShapeCanvas
@@ -70,10 +72,11 @@ export function TriStage({ state, dispatch, embedded, interactive, onAssemble, a
           {!d.assembled && <HeightLine ctx={ctx} foot={{ x: d.apexX, y: 0 }} top={{ x: d.apexX, y: d.h }} label={`高 ${fmt(d.h)}`} side={d.apexX < d.a / 2 ? -1 : 1} />}
           {d.assembled && (
             <>
-              <RulerButton ctx={ctx} at={{ x: d.a / 2, y: -1.3 }} shown={showBase} onClick={() => dispatch({ type: "TOGGLE_RULER", ruler: "base" })} />
-              <RulerButton ctx={ctx} at={{ x: d.a + d.apexX + 0.9, y: d.h / 2 }} shown={showHeight} onClick={() => dispatch({ type: "TOGGLE_RULER", ruler: "height" })} />
-              {showBase && <Ruler ctx={ctx} from={{ x: 0, y: 0 }} to={{ x: d.a, y: 0 }} value={`${fmt(d.a)} cm`} offset={0.9} />}
-              {showHeight && <Ruler ctx={ctx} from={{ x: d.a + d.apexX, y: 0 }} to={{ x: d.a + d.apexX, y: d.h }} value={`${fmt(d.h)} cm`} alt />}
+              {/* 钝角三角形拼合后宽约 14 cm：尺子贴在拼成平行四边形的底边与右端，避免落到舞台外 */}
+              <RulerButton ctx={ctx} at={{ x: (paraBox.xMin + d.a) / 2, y: -1.15 }} shown={showBase} onClick={() => dispatch({ type: "TOGGLE_RULER", ruler: "base" })} />
+              <RulerButton ctx={ctx} at={{ x: heightX + 0.85, y: d.h / 2 }} shown={showHeight} onClick={() => dispatch({ type: "TOGGLE_RULER", ruler: "height" })} />
+              {showBase && <Ruler ctx={ctx} from={{ x: 0, y: 0 }} to={{ x: d.a, y: 0 }} value={`${fmt(d.a)} cm`} offset={0.75} />}
+              {showHeight && <Ruler ctx={ctx} from={{ x: heightX, y: 0 }} to={{ x: heightX, y: d.h }} value={`${fmt(d.h)} cm`} alt />}
             </>
           )}
         </>

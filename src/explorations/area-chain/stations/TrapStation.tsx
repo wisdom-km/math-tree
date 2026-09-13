@@ -57,7 +57,7 @@ export function TrapStage({ state, dispatch, embedded, interactive, onAssemble, 
           {!d.assembled && (
             <>
               <BaseLine ctx={ctx} from={{ x: 0, y: 0 }} to={{ x: d.a, y: 0 }} label={`下底 ${fmt(d.a)} cm`} />
-              <BaseLine ctx={ctx} from={{ x: off, y: d.h }} to={{ x: off + d.b, y: d.h }} label={`上底 ${fmt(d.b)} cm`} offset={-0.55} />
+              <BaseLine ctx={ctx} from={{ x: off, y: d.h }} to={{ x: off + d.b, y: d.h }} label={`上底 ${fmt(d.b)} cm`} offset={-0.55} labelBelow={false} />
               <HeightLine ctx={ctx} foot={{ x: off, y: 0 }} top={{ x: off, y: d.h }} label={`高 ${fmt(d.h)}`} side={-1} />
             </>
           )}

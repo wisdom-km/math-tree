@@ -17,8 +17,8 @@ import "./shape-canvas.css";
 
 /** 1 cm 对应的 viewBox 像素 */
 export const PX_PER_CM = 72;
-/** 独立模式默认可视范围（cm） */
-export const DEFAULT_VIEW: Bounds = { xMin: -1.4, xMax: 16.2, yMin: -1.7, yMax: 9.2 };
+/** 独立模式默认可视范围（cm）。下沿多留空给底标注 / 尺子，右沿覆盖钝角三角形拼合后的宽（约 14 cm + 尺）。 */
+export const DEFAULT_VIEW: Bounds = { xMin: -2.6, xMax: 17.8, yMin: -2.8, yMax: 9.4 };
 
 export type ShapeRole = "source" | "piece" | "outline" | "ghost" | "result";
 
@@ -137,16 +137,19 @@ export function makeCtx(view: Bounds): CanvasCtx {
   return { toX, toY, toPx: (p) => ({ x: toX(p.x), y: toY(p.y) }), scale, view };
 }
 
-/** 嵌入模式默认视野：图形 + 拖点外接矩形，四周留 1 cm */
-export function fitView(shapes: ShapeSpec[], handles: HandleSpec[] = [], margin = 1): Bounds {
+/**
+ * 嵌入模式默认视野：图形 + 拖点外接矩形。
+ * 底 / 高标注线和尺子按钮在图形外侧，底边多留、左右各多留，避免被裁掉。
+ */
+export function fitView(shapes: ShapeSpec[], handles: HandleSpec[] = [], margin = 1.2): Bounds {
   const polys = shapes.map((s) => s.points);
   if (handles.length) polys.push(handles.map((h) => ({ x: h.x, y: h.y })));
   if (polys.length === 0) return DEFAULT_VIEW;
   const b = bounds(polys);
   return {
-    xMin: Math.floor(b.xMin) - margin,
-    xMax: Math.ceil(b.xMax) + margin,
-    yMin: Math.floor(b.yMin) - margin,
+    xMin: Math.floor(b.xMin) - margin - 0.8,
+    xMax: Math.ceil(b.xMax) + margin + 1.2,
+    yMin: Math.floor(b.yMin) - margin - 1.2,
     yMax: Math.ceil(b.yMax) + margin,
   };
 }
@@ -240,7 +243,7 @@ export function ShapeCanvas({
               {gridY
                 .filter((y) => y > 0 && y % 5 === 0)
                 .map((y) => (
-                  <text key={`ty${y}`} className="sc-tick" x={ctx.toX(0) - 12} y={ctx.toY(y) + 8} textAnchor="end">
+                  <text key={`ty${y}`} className="sc-tick" x={ctx.toX(0) - 28} y={ctx.toY(y) + 8} textAnchor="end">
                     {y}
                   </text>
                 ))}
@@ -252,20 +255,22 @@ export function ShapeCanvas({
 
           {/* 数格子 */}
           {cells &&
-            cells.cells.map((c) => {
-              const idx = cells.cells.indexOf(c) + 1;
-              const style = cells.animateRows ? { animationDelay: `${(c.j - Math.min(...cells.cells.map((k) => k.j))) * 0.45}s` } : undefined;
-              return (
-                <g key={`${cells.animKey ?? 0}-${c.i}-${c.j}`} className={`sc-cell ${c.kind} ${cells.animateRows ? "row-anim" : ""}`} style={style}>
-                  <rect x={ctx.toX(c.i) + 2} y={ctx.toY(c.j + 1) + 2} width={ctx.scale - 4} height={ctx.scale - 4} />
-                  {cells.numbered && (
-                    <text x={ctx.toX(c.i + 0.5)} y={ctx.toY(c.j + 0.5) + 9} textAnchor="middle">
-                      {c.kind === "full" ? idx : "½"}
-                    </text>
-                  )}
-                </g>
-              );
-            })}
+            (() => {
+              const minJ = cells.cells.reduce((m, k) => Math.min(m, k.j), Infinity);
+              return cells.cells.map((c, idx) => {
+                const style = cells.animateRows && Number.isFinite(minJ) ? { animationDelay: `${(c.j - minJ) * 0.45}s` } : undefined;
+                return (
+                  <g key={`${cells.animKey ?? 0}-${c.i}-${c.j}`} className={`sc-cell ${c.kind} ${cells.animateRows ? "row-anim" : ""}`} style={style}>
+                    <rect x={ctx.toX(c.i) + 2} y={ctx.toY(c.j + 1) + 2} width={ctx.scale - 4} height={ctx.scale - 4} />
+                    {cells.numbered && (
+                      <text x={ctx.toX(c.i + 0.5)} y={ctx.toY(c.j + 0.5) + 9} textAnchor="middle">
+                        {c.kind === "full" ? idx + 1 : "½"}
+                      </text>
+                    )}
+                  </g>
+                );
+              });
+            })()}
 
           {/* 图形 */}
           {shapes.map((s) => {

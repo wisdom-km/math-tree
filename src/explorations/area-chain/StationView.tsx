@@ -71,25 +71,34 @@ export function StationView({ station, state, dispatch, embedded = false, intera
   const canAssemble = station !== "rect" && (station !== "para" || st.cutDone);
   const anim = useAssembleAnimation(st.t, dispatch, canAssemble && interactive);
 
-  // 改参数会把 t 归 0 需重拼：改前弹一行非模态提示（3 秒消失，不拦截）
+  // 改参数会把 t 归 0 需重拼：弹一行非模态提示（3 秒消失，不拦截）
   const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevParam = useRef(st.param);
   const prevProgress = useRef({ t: st.t, cut: st.cutDone });
+  const stopAssemble = useRef(anim.stop);
+  stopAssemble.current = anim.stop;
   useEffect(() => {
-    if (prevParam.current !== st.param) {
-      if (prevProgress.current.t > 0 || (station === "para" && prevProgress.current.cut && !embedded)) {
-        anim.stop();
-        setToast("参数变了，转化进度回到 0，再拼一次");
-        const id = setTimeout(() => setToast(null), 3000);
-        prevParam.current = st.param;
-        prevProgress.current = { t: st.t, cut: st.cutDone };
-        return () => clearTimeout(id);
-      }
-      prevParam.current = st.param;
+    const paramChanged = prevParam.current !== st.param;
+    const hadProgress = prevProgress.current.t > 0 || (station === "para" && prevProgress.current.cut && !embedded);
+    if (paramChanged && hadProgress && station !== "rect") {
+      stopAssemble.current();
+      setToast("参数变了，转化进度回到 0，再拼一次");
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+      toastTimer.current = setTimeout(() => {
+        setToast(null);
+        toastTimer.current = null;
+      }, 3000);
     }
+    prevParam.current = st.param;
     prevProgress.current = { t: st.t, cut: st.cutDone };
-    return undefined;
-  }, [st.param, st.t, st.cutDone, station, embedded, anim]);
+  }, [st.param, st.t, st.cutDone, station, embedded]);
+  useEffect(
+    () => () => {
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+    },
+    [],
+  );
 
   const progress: ProgressSpec | null = embedded
     ? null
