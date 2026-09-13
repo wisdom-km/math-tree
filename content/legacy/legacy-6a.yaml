@@ -1,0 +1,128 @@
+# 六上直接依赖的旧知识节点
+# 数据抄录自 docs/knowledge-tree-6a.md 第 3 节（初稿，未审）。「待核」条目标 pending: true。
+
+nodes:
+  - id: 3a-01
+    title: 整数乘法的意义（几个几）
+    source: 三年级上·乘法
+    dependedBy: [6a-01-01]
+  - id: 3a-02
+    title: 四则混合运算顺序
+    source: 三年级下·两步运算等（待核精确单元）
+    dependedBy: [6a-01-08]
+    pending: true
+  - id: 3a-03
+    title: 积为 1 的直觉 / 乘积概念
+    source: 待核
+    dependedBy: [6a-03-01]
+    pending: true
+  - id: 3a-04
+    title: 除法意义：平均分
+    source: 二年级下 / 三年级·除法
+    dependedBy: [6a-03-03]
+  - id: 3a-05
+    title: 除法意义：包含除
+    source: 二年级下 / 三年级·除法
+    dependedBy: [6a-03-04]
+  - id: 3a-06
+    title: 除法意义（一般）
+    source: 二～三年级
+    dependedBy: [6a-04-01]
+  - id: 3a-07
+    title: 圆的初步认识
+    source: 一年级下·认识图形（二）
+    dependedBy: [6a-05-01]
+  - id: 3a-08
+    title: 周长的含义
+    source: 三年级上·长方形和正方形
+    dependedBy: [6a-05-04]
+    summary: 封闭图形一周的长度，是它的周长。
+  - id: 3a-09
+    title: 面积的加减
+    source: 三年级下·面积
+    dependedBy: [6a-05-09]
+  - id: 3b-01
+    title: 小数的意义
+    source: 三年级下·小数的初步认识；四年级下·小数的意义和性质
+    dependedBy: [6a-01-06]
+  - id: 4a-01
+    title: 分数的意义
+    source: 三年级上·分数的初步认识；五年级下·分数的意义（直接支撑用五下）
+    dependedBy: [6a-01-01, 6a-01-03, 6a-01-04, 6a-04-01, 6a-06-01]
+  - id: 4a-02
+    title: 分数的基本性质
+    source: 五年级下
+    dependedBy: [6a-01-05, 6a-04-04]
+  - id: 4a-03
+    title: 角的度量
+    source: 四年级上·角的度量
+    dependedBy: [6a-02-01, 6a-02-02, 6a-05-11]
+  - id: 4a-04
+    title: 分数与除法的关系
+    source: 五年级下
+    dependedBy: [6a-04-03]
+  - id: 4a-05
+    title: 商不变的规律
+    source: 四年级下·除法
+    dependedBy: [6a-04-03, 6a-04-04]
+  - id: 4a-06
+    title: 小数与分数互化
+    source: 五年级下·分数的意义和性质（分数和小数的互化）
+    dependedBy: [6a-06-03]
+  - id: 4a-07
+    title: 分数加法
+    source: 五年级下
+    dependedBy: [6a-08-02]
+  - id: 4b-01
+    title: 整数乘法运算律
+    source: 四年级下
+    dependedBy: [6a-01-07]
+  - id: 4b-02
+    title: 条形统计图
+    source: 四年级上·条形统计图
+    dependedBy: [6a-07-01, 6a-07-03]
+  - id: 5a-01
+    title: 倍的认识与“求比一个数多（少）几”的整数应用
+    source: 二年级上·求比一个数多（少）几；三年级上·倍的认识（“多几分之几”本身是六上首次出现）
+    dependedBy: [6a-01-10]
+  - id: 5a-02
+    title: 八个方向
+    source: 三年级下·位置与方向（一）
+    dependedBy: [6a-02-01, 6a-02-02]
+  - id: 5a-03
+    title: 数对确定位置
+    source: 五年级上·位置
+    dependedBy: [6a-02-01]
+  - id: 5a-04
+    title: 工作总量 = 工作效率 × 工作时间
+    source: 四年级上·常见数量关系（教材以速度、单价为主，工作效率待核是否明示）
+    dependedBy: [6a-03-09]
+    pending: true
+  - id: 5a-05
+    title: 轴对称图形
+    source: 二年级下·图形的运动（一）；四年级下·图形的运动（二）
+    dependedBy: [6a-05-02]
+  - id: 5a-06
+    title: 长方形面积
+    source: 三年级下
+    dependedBy: [6a-05-07]
+  - id: 5a-07
+    title: 平行四边形、三角形、梯形面积（转化）
+    source: 五年级上·多边形的面积
+    dependedBy: [6a-05-07]
+  - id: 5a-08
+    title: 正方形面积
+    source: 三年级下
+    dependedBy: [6a-05-10]
+  - id: 5a-09
+    title: 平方的认识（a² 的含义）
+    source: 五年级上·简易方程（用字母表示数）
+    dependedBy: [6a-08-01]
+  - id: 5b-01
+    title: 解方程（天平/等式性质）
+    source: 五年级上·简易方程
+    dependedBy: [6a-03-06, 6a-03-07, 6a-03-08]
+  - id: 5b-02
+    title: 折线统计图
+    source: 五年级下·折线统计图
+    dependedBy: [6a-07-03]
