@@ -155,6 +155,7 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
         onPointerMove={onGroundMove}
         onPointerUp={onGroundUp}
         onPointerCancel={onGroundUp}
+        onLostPointerCapture={onGroundUp}
       />
 
       {/* 滚过的周长段（青绿高亮底） */}
@@ -212,8 +213,8 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
           </g>
         );
       })}
-      <text className="svg-label muted" x={STAGE_W - 20} y={GROUND_Y + 54} textAnchor="end">
-        cm
+      <text className="svg-label muted" x={STAGE_W - 20} y={GROUND_Y - 16} textAnchor="end">
+        单位：cm
       </text>
 
       {/* 红点印记 */}
@@ -224,22 +225,24 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
 
       {/* 轮子 */}
       <g transform={`translate(${cx} ${cy})`}>
+        {/* 满圈脉冲动画用 key 重启；命中区放在外面，避免捕获指针的元素被重挂载而丢 pointerup */}
         <g className={`wheel-group ${wiggle ? "wiggle" : ""} ${locked ? "pulse" : ""}`} key={`${s.rollCount}-${locked}`}>
           <circle className="wheel" r={rPx} />
           <circle r={6} fill="var(--c-wheel-stroke)" />
           <text className="svg-label" x={12} y={-12}>
             O
           </text>
-          {/* 命中区：整个轮面 */}
-          <circle
-            className="hit"
-            r={Math.max(rPx, 32)}
-            onPointerDown={onWheelDown}
-            onPointerMove={onWheelMove}
-            onPointerUp={onWheelUp}
-            onPointerCancel={onWheelUp}
-          />
         </g>
+        {/* 命中区：整个轮面 */}
+        <circle
+          className="hit"
+          r={Math.max(rPx, 32)}
+          onPointerDown={onWheelDown}
+          onPointerMove={onWheelMove}
+          onPointerUp={onWheelUp}
+          onPointerCancel={onWheelUp}
+          onLostPointerCapture={onWheelUp}
+        />
       </g>
 
       {/* 直径（水平，两端拖点） */}
@@ -261,6 +264,7 @@ export function WheelStage({ state, dispatch, interactive, contrast, wiggle }: P
               onPointerMove={onHandleMove}
               onPointerUp={onHandleUp}
               onPointerCancel={onHandleUp}
+              onLostPointerCapture={onHandleUp}
             />
           </g>
         );
