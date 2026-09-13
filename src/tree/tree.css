@@ -1,0 +1,187 @@
+.tree-page {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(28rem, 34rem) 1fr;
+}
+
+.tree-list {
+  overflow-y: auto;
+  border-right: 1px solid var(--c-line);
+  background: var(--c-panel);
+  padding: 1rem 0 2rem;
+  touch-action: pan-y;
+}
+.tree-list .unit {
+  padding: 0 1rem 0.5rem;
+}
+.tree-list .unit h2 {
+  font-size: var(--fs-body);
+  margin: 1rem 0.25rem 0.5rem;
+  color: var(--c-muted);
+  font-weight: 700;
+}
+.tree-list .unit h4 {
+  margin: 0.75rem 0.5rem 0.25rem;
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+.tree-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.unit-id,
+.node-id {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+  min-width: 5.5rem;
+}
+.tree-node {
+  width: 100%;
+  min-height: var(--touch);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  text-align: left;
+  font-size: var(--fs-body);
+}
+.tree-node:active {
+  background: #e9edf3;
+}
+.tree-node[aria-pressed="true"] {
+  background: #e6eeff;
+  color: var(--c-primary);
+}
+.tree-node .node-title {
+  flex: 1;
+}
+.tree-node .dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--c-arc);
+  flex: none;
+}
+
+.tree-detail {
+  overflow-y: auto;
+  padding: 2rem 3rem;
+  touch-action: pan-y;
+}
+.tree-detail .placeholder {
+  max-width: 60rem;
+  color: var(--c-text);
+}
+
+.node-detail header .node-kind {
+  color: var(--c-muted);
+  font-size: var(--fs-small);
+}
+.node-detail h2 {
+  font-size: 2.75rem;
+  margin: 0.25rem 0 0.75rem;
+}
+.node-detail .summary {
+  font-size: var(--fs-num);
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0 0 1rem;
+}
+.node-detail .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  color: var(--c-muted);
+  font-size: var(--fs-small);
+}
+.tag {
+  padding: 0.1rem 0.6rem;
+  border-radius: 1rem;
+  border: 1px solid var(--c-line);
+}
+.tag.ok {
+  border-color: var(--c-ok);
+  color: var(--c-ok);
+}
+
+.detail-section {
+  margin-top: 1.75rem;
+}
+.detail-section h3 {
+  font-size: var(--fs-body);
+  color: var(--c-muted);
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+}
+.detail-section ul,
+.detail-section ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.detail-section li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  min-height: var(--touch);
+}
+.detail-section .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.detail-section .chips li {
+  background: var(--c-panel);
+  border: 1px solid var(--c-line);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+.node-link {
+  min-height: var(--touch);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--c-line);
+  background: var(--c-panel);
+  font-size: var(--fs-body);
+}
+.node-link:active {
+  background: #e9edf3;
+}
+.node-pending {
+  color: var(--c-muted);
+}
+.edge-note {
+  color: var(--c-warn);
+  font-size: var(--fs-small);
+}
+.explorations .btn {
+  margin: 0.25rem 0.75rem 0.25rem 0;
+}
+.explorations .badge {
+  font-size: var(--fs-small);
+  opacity: 0.85;
+  font-weight: 500;
+}
+
+.mode-switch {
+  display: inline-flex;
+  gap: 0.5rem;
+}
+.db-badge {
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+  border: 1px solid var(--c-line);
+  border-radius: 1rem;
+  padding: 0.2rem 0.75rem;
+}
+.db-badge.is-error {
+  color: var(--c-danger);
+  border-color: var(--c-danger);
+}
