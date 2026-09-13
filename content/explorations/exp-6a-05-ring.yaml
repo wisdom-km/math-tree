@@ -1,0 +1,24 @@
+# 迷你探究单：圆环面积（圆的面积交互稿步骤 9 延伸 A，已拍板第 7 条独立成单，从知识树节点 6a-05-09 进入）
+# 交互稿：docs/explorations/circle-area.md 第 5 节步骤 9「延伸 A」。
+
+id: exp-6a-05-ring
+title: 圆环面积
+component: circle-ring
+status: draft
+level: L2
+durationMinutes: 5–8
+pages: p66（例 2）
+spec: docs/explorations/circle-area.md
+
+primaryNode: 6a-05-09
+coversNodes: []
+prerequisites: [6a-05-08, 3a-09]
+methods: [M-04]
+
+questionCards:
+  - step: 9
+    questions:
+      - 圆环面积为什么不能用「外半径 − 内半径」再平方？
+      - 小丽先算两个圆再相减，小明先算 R² − r² 再乘 π——结果为什么一样？
+      - 内圆越来越大、快追上外圆时，圆环面积往哪里去？
+    handVote: [一样, 不一样, 说不准]

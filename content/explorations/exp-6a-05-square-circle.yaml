@@ -1,0 +1,24 @@
+# 迷你探究单：方圆组合面积（圆的面积交互稿步骤 9 延伸 B，已拍板第 7 条独立成单，从知识树节点 6a-05-10 进入）
+# 交互稿：docs/explorations/circle-area.md 第 5 节步骤 9「延伸 B」。
+
+id: exp-6a-05-square-circle
+title: 外方内圆 · 外圆内方
+component: circle-square
+status: draft
+level: L2
+durationMinutes: 5–8
+pages: p67–68（例 3）
+spec: docs/explorations/circle-area.md
+
+primaryNode: 6a-05-10
+coversNodes: []
+prerequisites: [6a-05-08, 5a-08]
+methods: [M-04]
+
+questionCards:
+  - step: 9
+    questions:
+      - 外方内圆里正方形的边长是多少？和圆的什么一样？
+      - 外圆内方里正方形的边长是多少？为什么要拆成两个三角形来算？（又是转化）
+      - 半径变了，差值也变了，但「÷ r²」的系数不变——这说明什么？
+    handVote: ["2", "4", "3.14"]
