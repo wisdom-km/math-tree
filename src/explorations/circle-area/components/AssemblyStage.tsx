@@ -59,7 +59,7 @@ export function AssemblyStage({ state, dispatch, interactive, contrast, degraded
   useEffect(() => {
     setRulers({ length: false, width: false });
     setZoomPiece(null);
-  }, [s.n, s.r, s.assembly, isAssembled]);
+  }, [s.n, s.r, s.assembly, s.step, isAssembled]);
 
   // 「凹凸的地方越来越小了」每档 n 只提示一次，3 秒后消失
   useEffect(() => {
@@ -389,7 +389,8 @@ function ZoomedPiece({
   const x2 = cx + R * Math.cos(-Math.PI / 2 + g.half);
   const y2 = cy + R * Math.sin(-Math.PI / 2 + g.half);
   return (
-    <g className="zoom-piece" onClick={onClose}>
+    <g className="zoom-piece">
+      <rect className="hit" x={0} y={0} width={STAGE_W} height={STAGE_H} onClick={onClose} />
       <rect x={40} y={400} width={540} height={340} rx={12} />
       <path d={`M${cx} ${cy} L${x1} ${y1} A${R} ${R} 0 0 1 ${x2} ${y2} Z`} className="piece odd" />
       <line className="dim-line arc" x1={x1} y1={y1 + 18} x2={x2} y2={y2 + 18} />

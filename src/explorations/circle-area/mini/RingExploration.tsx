@@ -107,7 +107,7 @@ export function RingExploration({ exploration }: ExplorationProps) {
       )}
       <div className="choice-row">
         <button className="btn primary" onClick={() => { setR(DISC_OUTER); setRInner(DISC_INNER); }}>
-          光盘：内 2 cm · 外 6 cm
+          光盘：内 2 · 外 6
         </button>
         <button className="btn" aria-pressed={trap} onClick={() => setTrap((v) => !v)}>
           {trap ? "收起错法" : "π(R − r)² 也对吗？"}
@@ -143,10 +143,10 @@ export function RingExploration({ exploration }: ExplorationProps) {
           <line className="radius-seg" x1={CX} y1={CY} x2={CX + Rpx} y2={CY} />
           <line className="radius-seg ring-inner-r" x1={CX} y1={CY} x2={CX} y2={CY - rPx} />
           <circle cx={CX} cy={CY} r={6} fill="var(--c-wheel-stroke)" />
-          <text className="svg-num orange" x={CX + Rpx * 0.55} y={CY - 12}>
+          <text className="svg-num orange" x={CX + Rpx + 16} y={CY + 8}>
             R = {R.toFixed(1)}
           </text>
-          <text className="svg-num" x={CX + 14} y={CY - rPx * 0.5} fill="var(--c-primary)">
+          <text className="svg-num" x={CX - 16} y={CY - rPx * 0.55} fill="var(--c-primary)" textAnchor="end">
             r = {rInner.toFixed(1)}
           </text>
           <text className="svg-label" x={CX} y={CY + Rpx + 40} textAnchor="middle">

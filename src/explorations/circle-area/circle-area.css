@@ -438,7 +438,20 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  align-items: center;
+  align-items: stretch;
+}
+.mini-exp .exp-side .choice-row {
+  flex-direction: column;
+}
+.mini-exp .exp-side .choice-row .btn {
+  width: 100%;
+  flex: none;
+}
+.mini-exp .live-formula .formula {
+  font-size: var(--fs-num);
+}
+.mini-exp .exp-stage .svg-slider {
+  max-width: 48rem;
 }
 
 /* ---------- 提示 ---------- */
