@@ -159,6 +159,7 @@ describe("拼合几何派生量（真实弦长 / 弓高，不加噪声）", () =
     // 128 份：与精确值差 < 0.02 cm²（彩蛋文案依据）
     expect(Math.abs(gapToTrue({ ...s, n: 128 }))).toBeLessThan(0.02);
     expect(gapToTrue({ ...s, n: 8 })).toBeGreaterThan(gapToTrue({ ...s, n: 64 }));
+    for (const r of [2, 3.3, 5, 6]) expect(Math.abs(gapToTrue({ ...s, r, n: 128 }))).toBeLessThan(0.02);
   });
 
   it("数格子：r = 4 时完整 32 格；完整 + 不完整 ≥ 面积所需格数", () => {

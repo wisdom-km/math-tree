@@ -84,9 +84,12 @@ export function currentApprox(s: CoreState): { length: number; width: number; ar
   return { length: round2(a.length), width: round2(a.width), area: round2(a.area) };
 }
 
-/** 还差多少（精确 − 近似），揭示后说明「越多越接近」 */
+/**
+ * 还差多少（「精确」− 近似），揭示后说明「越多越接近」。
+ * 「精确」取界面上展示的 3.14 × r²（与教材一致），而非 Math.PI；n = 128 时 |差| < 0.02（彩蛋文案依据）。
+ */
 export function gapToTrue(s: CoreState): number {
-  return exactS(s) - approxFor(s.r, s.n, s.assembly).area;
+  return formulaS(s.r) - approxFor(s.r, s.n, s.assembly).area;
 }
 
 /* ---------- 状态谓词 ---------- */
