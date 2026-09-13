@@ -9,7 +9,8 @@ export const KNOWLEDGE_ID = /^[1-6][ab]-\d{2}-\d{2}$/; // 6a-05-05
 export const LEGACY_ID = /^[1-6][ab]-\d{2}$/; // 3a-08
 export const METHOD_ID = /^M-\d{2}$/; // M-11
 export const UNIT_ID = /^[1-6][ab]-\d{2}$/; // 6a-05
-export const EXPLORATION_ID = /^exp-[1-6][ab]-\d{2}-[a-z0-9-]+$/; // exp-6a-05-circumference
+/** 单元探究单 exp-6a-05-circumference；跨年级的转化链探究单 exp-chain-area */
+export const EXPLORATION_ID = /^exp-(?:[1-6][ab]-\d{2}|chain)-[a-z0-9-]+$/;
 
 const nodeIdSchema = z
   .string()
@@ -110,7 +111,7 @@ export const questionCardSchema = z.object({
 export type QuestionCard = z.infer<typeof questionCardSchema>;
 
 export const explorationSchema = z.object({
-  id: z.string().regex(EXPLORATION_ID, "探究单 id 形如 exp-6a-05-circumference"),
+  id: z.string().regex(EXPLORATION_ID, "探究单 id 形如 exp-6a-05-circumference 或 exp-chain-area"),
   title: z.string().min(1),
   /** 前端路由组件键，代码里按它挑选实现 */
   component: z.string().min(1),
@@ -118,8 +119,9 @@ export const explorationSchema = z.object({
   level: visualLevelSchema,
   durationMinutes: z.string().min(1).optional(),
   pages: z.string().min(1).optional(),
-  primaryNode: z.string().regex(KNOWLEDGE_ID),
-  coversNodes: z.array(z.string().regex(KNOWLEDGE_ID)).default([]),
+  /** 主挂节点：知识点，或旧知识（迷你回忆探究单挂在旧知识上，需求 3.3） */
+  primaryNode: z.string().regex(new RegExp(`${KNOWLEDGE_ID.source}|${LEGACY_ID.source}`), "primaryNode 须为知识点或旧知识 id"),
+  coversNodes: z.array(nodeIdSchema).default([]),
   prerequisites: z.array(nodeIdSchema).default([]),
   methods: z.array(z.string().regex(METHOD_ID)).default([]),
   confusionEdges: z

@@ -1,0 +1,39 @@
+# 探究单：图形面积转化链（五站共用界面）
+# 交互稿：docs/explorations/area-chain.md。提问卡文案逐字取自交互稿第 4 节；
+# questionCards 的 step 字段在本探究单里表示「第几站」（1 长方形 … 5 圆）。
+
+id: exp-chain-area
+title: 图形面积转化链
+component: area-chain
+status: draft
+level: L2
+durationMinutes: 每站 5–8（沿链播放前四站 22–30）
+spec: docs/explorations/area-chain.md
+
+# 第 1 站挂旧知识 5a-06（含 5a-08 正方形特例）；第 2–4 站挂 5a-07；第 5 站指向 6a-05-07 的圆的面积探究单
+primaryNode: 5a-06
+coversNodes: [5a-07, 5a-08, 6a-05-07]
+prerequisites: [3a-01]
+methods: [M-04, M-10]
+
+questionCards:
+  - step: 1
+    questions:
+      - 为什么长方形数格子可以「一行一行数」？和乘法有什么关系？
+      - 正方形要不要单独记一个公式？它和长方形是什么关系？
+  - step: 2
+    questions:
+      - 剪下来的三角形挪到右边，面积多了还是少了？什么变了？什么没变？
+      - 平行四边形的「高」为什么必须垂直于底？用斜边算会怎样？
+  - step: 3
+    questions:
+      - 为什么要「借」一个一样的三角形？借来之后为什么要 ÷ 2？
+      - 顶点往上拖，底不变，面积怎么变？顶点左右移（老师模式演示）面积变不变？
+  - step: 4
+    questions:
+      - 拼成的平行四边形的底是多少？为什么是「上底 + 下底」？
+      - 把上底拖到 0，梯形变成了什么？公式还能用吗？
+  - step: 5
+    questions:
+      - 前面四个图形，我们用同一招「剪 / 移 / 拼」把它们都变成了什么？
+      - 圆没有直直的边，还能「剪 / 移 / 拼」吗？会剪成什么样？

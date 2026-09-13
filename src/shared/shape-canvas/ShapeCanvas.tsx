@@ -18,7 +18,7 @@ import "./shape-canvas.css";
 /** 1 cm 对应的 viewBox 像素 */
 export const PX_PER_CM = 72;
 /** 独立模式默认可视范围（cm） */
-export const DEFAULT_VIEW: Bounds = { xMin: -1.4, xMax: 16.2, yMin: -1.1, yMax: 9.4 };
+export const DEFAULT_VIEW: Bounds = { xMin: -1.4, xMax: 16.2, yMin: -1.7, yMax: 9.2 };
 
 export type ShapeRole = "source" | "piece" | "outline" | "ghost" | "result";
 
@@ -226,13 +226,14 @@ export function ShapeCanvas({
           ))}
           {!embedded && (
             <>
-              <text className="sc-tick" x={ctx.toX(0) - 10} y={ctx.toY(0) + 30} textAnchor="end">
+              {/* 刻度数字放在舞台最下沿，给图形下方的标注线留空 */}
+              <text className="sc-tick" x={ctx.toX(0)} y={H - 10} textAnchor="middle">
                 0
               </text>
               {gridX
                 .filter((x) => x > 0 && x % 5 === 0)
                 .map((x) => (
-                  <text key={`tx${x}`} className="sc-tick" x={ctx.toX(x)} y={ctx.toY(0) + 30} textAnchor="middle">
+                  <text key={`tx${x}`} className="sc-tick" x={ctx.toX(x)} y={H - 10} textAnchor="middle">
                     {x}
                   </text>
                 ))}
@@ -243,7 +244,7 @@ export function ShapeCanvas({
                     {y}
                   </text>
                 ))}
-              <text className="sc-tick" x={ctx.toX(1) + 2} y={ctx.toY(0) + 30}>
+              <text className="sc-tick" x={ctx.toX(1)} y={H - 10} textAnchor="middle">
                 1 cm
               </text>
             </>
