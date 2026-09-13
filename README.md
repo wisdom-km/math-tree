@@ -5,6 +5,8 @@
 - [需求文档 v1](docs/requirements-v1.md)
 - [六上知识树初稿](docs/knowledge-tree-6a.md)
 - [探究单交互稿：圆的周长](docs/explorations/circle-circumference.md)
+- [探究单交互稿：图形面积转化链](docs/explorations/area-chain.md)
+- [探究单交互稿：圆的面积](docs/explorations/circle-area.md)
 - [可视化教学方案调研报告](docs/research-visualization.md)
 - [内容文件格式](content/README.md)
 
@@ -19,7 +21,8 @@ src/db/             Drizzle schema、仓储接口、SQLite / 内存两种实现
 drizzle/            drizzle-kit 生成的迁移 SQL（Rust 侧启动时执行）
 src/tree/           知识树浏览页
 src/roster/         名册（M1 最小版：建学生、选当前上台学生、看证据）
-src/explorations/   探究单实现；circle-circumference/ 为「圆的周长」
+src/explorations/   探究单实现；circle-circumference/ 为「圆的周长」；area-chain/ 为「图形面积转化链」
+src/shared/         链上共用舞台 ShapeCanvas、剪 / 移 / 拼、几何计算
 src-tauri/          Tauri 2 壳（Rust）：SQL 插件、迁移、Windows 打包配置
 .github/workflows/  build-windows.yml：tauri-action 打 Windows 安装包
 ```
@@ -45,10 +48,12 @@ pnpm tauri dev
 
 打开后：`#/` 知识树浏览页 → 点「6a-05-05 圆周率 π」→ 「圆的周长」进入探究单；也可直接访问 `#/explore/exp-6a-05-circumference`。顶栏可切老师 / 学生模式。
 
+面积转化链（五站迷你回忆）：`#/explore/exp-chain-area?station=rect&play=1` 从第 1 站沿链播放。`station` 为 `rect` / `para` / `tri` / `trap` / `circle`。嵌入模式自检（模拟圆面积步骤 0 并排回忆）：`#/explore/exp-chain-area?embed=1`；单站 `?embed=para`。知识树旧知识 `5a-06` / `5a-08` 进第 1 站、`5a-07` 进第 2 站、`6a-05-07` 进第 5 站入口；「转化自」栏有「沿链播放」。
+
 ## 测试与检查
 
 ```bash
-pnpm test           # vitest：内容层校验 + 探究单状态模型（派生量、步骤流转、撤销/重置）
+pnpm test           # vitest：内容层校验 + 探究单状态模型（周长 + 面积链）+ 几何
 pnpm typecheck      # tsc --noEmit
 pnpm build          # 类型检查 + Vite 生产构建
 cargo check --manifest-path src-tauri/Cargo.toml
@@ -79,4 +84,4 @@ Windows 安装包由 GitHub Actions 打：推 `v*` tag 自动运行 `.github/wor
 
 ## 里程碑
 
-见需求文档第 8 节。当前：M1 第一阶段（骨架、数据层、内容层、知识树浏览页、「圆的周长」探究单）。
+见需求文档第 8 节。当前：M1 第一阶段（骨架、数据层、内容层、知识树浏览页、「圆的周长」探究单、「图形面积转化链」探究单）。

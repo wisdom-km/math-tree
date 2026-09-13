@@ -25,7 +25,7 @@ content/
 | 知识点 | `<单元 id>-<两位序号>` | `6a-05-05` |
 | 旧知识 | `<年级><册>-<两位序号>` | `3a-08` |
 | 方法 | `M-<两位>` | `M-11` |
-| 探究单 | `exp-<单元 id>-<英文短名>` | `exp-6a-05-circumference` |
+| 探究单 | `exp-<单元 id>-<英文短名>`；跨年级转化链 `exp-chain-<短名>` | `exp-6a-05-circumference`、`exp-chain-area` |
 
 年级 `1–6`，册 `a` 上 / `b` 下。id 一经使用不改（数据库掌握度、证据都以它为键）。
 
@@ -112,6 +112,12 @@ questionCards:                    # 老师提问卡，按步骤 0–9 分组，�
 ```
 
 `primaryNode`、`coversNodes`、`prerequisites`、`methods`、`confusionEdges` 引用的节点必须存在（这里不允许占位）。同一步骤的提问卡只能出现一次。
+
+迷你回忆探究单（需求 3.3）挂在旧知识上时：
+
+- `id` 允许 `exp-chain-*`（见上表），不必带单元号。
+- `primaryNode` 允许旧知识 id（如 `5a-06`），不仅是 `6a-05-05` 这种知识点。
+- `coversNodes` 允许知识点 / 旧知识 / 方法节点（`nodeIdSchema`），以便一条链覆盖 `5a-06`、`5a-07`、`M-04` 等。
 
 ## 写内容的原则
 
