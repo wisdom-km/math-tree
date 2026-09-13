@@ -1,0 +1,13 @@
+node_modules/
+dist/
+*.local
+*.log
+.DS_Store
+
+# Tauri / Rust
+src-tauri/target/
+src-tauri/gen/schemas/
+
+# 本地数据库（开发时生成）
+*.db
+*.db-journal

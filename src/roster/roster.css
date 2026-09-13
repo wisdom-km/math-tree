@@ -1,0 +1,58 @@
+.roster-page {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(28rem, 34rem) 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+.roster-page .panel {
+  overflow-y: auto;
+  touch-action: pan-y;
+}
+.roster-page h2 {
+  margin: 0 0 0.5rem;
+  font-size: var(--fs-title);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.roster-page h3 {
+  margin: 1.5rem 0 0.5rem;
+  font-size: var(--fs-body);
+  color: var(--c-muted);
+}
+.roster-page .add-row {
+  display: flex;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.roster-page input {
+  flex: 1;
+  min-height: var(--touch);
+  font: inherit;
+  font-size: var(--fs-body);
+  padding: 0 1rem;
+  border: 2px solid var(--c-line);
+  border-radius: 0.5rem;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.roster-page ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.roster-page ul.plain {
+  display: block;
+}
+.roster-page ul.plain li {
+  min-height: var(--touch);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--c-line);
+}

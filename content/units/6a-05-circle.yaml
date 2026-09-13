@@ -1,0 +1,173 @@
+# 六年级上册 · 单元五 圆
+# 数据抄录自 docs/knowledge-tree-6a.md 第 2 节「单元五：圆」（初稿，未审）。
+# 格式说明见 content/README.md。
+
+unit:
+  id: 6a-05
+  grade: 6a
+  order: 5
+  title: 圆
+  pages: p55–77
+  source: 义务教育教科书·数学六年级上册（人民教育出版社，2022 年第 2 版）
+
+nodes:
+  - id: 6a-05-01
+    title: 圆的基本概念
+    summary: 圆心 O、半径 r、直径 d；同一圆中半径无数且相等，直径＝2 半径。
+    pages: 55–56
+    model: 圆规作图、标注 O/r/d
+    level: L2
+    relations:
+      transformsFrom: [3a-07]
+      decomposesInto: [圆心, 到圆心距离相等]
+      relatesTo: [6a-05-03]
+      confusedWith:
+        - note: 半径与直径数值混用
+
+  - id: 6a-05-02
+    title: 圆的轴对称性
+    summary: 圆沿任意直径对折两侧重合；有无数条对称轴。
+    pages: "56"
+    model: 折纸对折
+    level: L2
+    relations:
+      transformsFrom: [5a-05]
+      decomposesInto: [对折重合]
+      relatesTo: [6a-05-01]
+      confusedWith:
+        - note: 对称轴只有 1 条
+
+  - id: 6a-05-03
+    title: 圆心与半径的作用
+    summary: 圆心定位置，半径定大小。
+    pages: "56"
+    model: 移动圆心/改变两脚距离
+    level: L3
+    relations:
+      transformsFrom: [6a-05-01]
+      decomposesInto: [位置、大小两要素]
+      relatesTo: [6a-05-06]
+
+  - id: 6a-05-04
+    title: 圆的周长含义
+    summary: 围成圆的曲线的长叫圆的周长。
+    pages: "60"
+    model: 绕绳、滚动一周
+    level: L2
+    relations:
+      transformsFrom: [3a-08]
+      decomposesInto: [曲线长度]
+      relatesTo: [6a-05-06]
+      confusedWith:
+        - node: 6a-05-08
+          note: 周长与面积混淆
+
+  - id: 6a-05-05
+    title: 圆周率 π
+    summary: 任意圆周长与直径的比值是定值 π（无限不循环小数），应用常取 3.14。
+    pages: "61"
+    model: 测量填表、比值稳定
+    level: L3
+    relations:
+      transformsFrom:
+        - 6a-05-04
+        - node: 6a-04-02
+          title: 比的各部分名称与比值
+      decomposesInto: [周长÷直径＝定值]
+      relatesTo: [6a-05-06]
+      confusedWith:
+        - note: 以为 π 就是 3.14（精确值）
+
+  - id: 6a-05-06
+    title: 圆的周长公式
+    summary: C=πd 或 C=2πr。
+    pages: 61–62
+    model: 公式与滚动画联动
+    level: L2
+    relations:
+      transformsFrom: [6a-05-05]
+      decomposesInto: [C 与 d、r 关系]
+      relatesTo: [6a-05-08]
+      confusedWith:
+        - note: 用半径套 πd
+
+  - id: 6a-05-07
+    title: 圆的面积公式推导
+    summary: 把圆等分成偶数份剪拼成近似长方形，得 S=πr²。
+    pages: "65"
+    model: 剪拼扇形条、份数越多越接近
+    level: L3
+    relations:
+      transformsFrom: [5a-06, 5a-07]
+      decomposesInto: [剪拼, 长≈πr, 宽＝r]
+      relatesTo:
+        - 6a-05-08
+        - node: M-04
+          note: 方法：转化
+      confusedWith:
+        - note: 与周长公式记混
+
+  - id: 6a-05-08
+    title: 圆的面积计算
+    summary: 已知 r 或 d，用 S=πr² 求面积。
+    pages: "66"
+    model: 圆形草坪图
+    level: L1
+    relations:
+      transformsFrom: [6a-05-07]
+      decomposesInto: [S=πr²]
+      relatesTo: [6a-05-09]
+      confusedWith:
+        - note: r、d 未统一
+
+  - id: 6a-05-09
+    title: 圆环面积
+    summary: 圆环面积＝外圆面积−内圆面积。
+    pages: "66"
+    model: 光盘内外圆
+    level: L2
+    relations:
+      transformsFrom: [6a-05-08, 3a-09]
+      decomposesInto: [大面积−小面积]
+      relatesTo: [6a-05-10]
+      confusedWith:
+        - note: 用直径差直接套公式
+
+  - id: 6a-05-10
+    title: 方圆组合面积
+    summary: 外方内圆、外圆内方等，用正方形与圆面积差求中间部分。
+    pages: 67–68
+    model: 外方内圆/外圆内方图
+    level: L2
+    relations:
+      transformsFrom: [6a-05-08, 5a-08]
+      decomposesInto: [差积]
+      relatesTo: [6a-05-09]
+      confusedWith:
+        - note: 外圆内方边长认错
+
+  - id: 6a-05-11
+    title: 弧、扇形与圆心角
+    summary: 弧是圆上两点间部分；扇形由弧和两条半径围成；圆心角顶点在圆心；同圆中扇形大小与圆心角有关。
+    pages: "73"
+    model: 扇形示意图、折扇
+    level: L2
+    relations:
+      transformsFrom: [6a-05-01, 4a-03]
+      decomposesInto: [弧, 半径, 圆心角]
+      relatesTo:
+        - node: 6a-07-01
+          title: 扇形统计图的特点
+      confusedWith:
+        - note: 圆心角与圆周角（超纲）混淆
+
+  - id: 6a-05-12
+    title: 扇环
+    summary: 从圆环上截取的部分叫扇环，面积可用扇形思路求。
+    pages: "74"
+    model: 扇环图
+    level: L2
+    relations:
+      transformsFrom: [6a-05-09, 6a-05-11]
+      decomposesInto: [扇形面积差]
+      relatesTo: [6a-05-09]
