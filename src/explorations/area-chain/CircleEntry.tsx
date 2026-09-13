@@ -16,17 +16,17 @@ export function CircleEntry({ state, dispatch }: { state: State; dispatch: Dispa
   const done = completedStations(state);
   const target = href(`/explore/${CIRCLE_AREA_EXPLORATION_ID}`, state.playThrough ? { step: "3", from: "chain" } : { from: "chain" });
 
-  // 四个已会算的图形并排 + 一个圆：同一网格底
+  // 四个已会算的图形并排 + 一个圆：同一网格底；圆靠右，避免压住梯形
   const circlePts = Array.from({ length: 48 }, (_, i) => {
     const a = (i / 48) * Math.PI * 2;
-    return { x: 12.5 + 2 * Math.cos(a), y: 2 + 2 * Math.sin(a) };
+    return { x: 13.6 + 1.55 * Math.cos(a), y: 2 + 1.55 * Math.sin(a) };
   });
   const known: ShapeSpec[] = [
     { id: "rect", points: rectangle(2, 2) },
-    { id: "para", points: parallelogram(2, 2, 0.8) },
+    { id: "para", points: parallelogram(2, 2, 0.7) },
     { id: "tri", points: triangle(2, 2) },
-    { id: "trap", points: trapezoid(2.4, 1.2, 2, 0.6) },
-  ].map((s, i) => ({ ...s, role: "source" as const, points: s.points.map((p) => ({ x: p.x + i * 2.8 + 0.5, y: p.y })) }));
+    { id: "trap", points: trapezoid(2.2, 1.1, 2, 0.5) },
+  ].map((s, i) => ({ ...s, role: "source" as const, points: s.points.map((p) => ({ x: p.x + i * 2.55 + 0.25, y: p.y })) }));
 
   return (
     <div className="chain-station" data-station="circle">
@@ -34,7 +34,7 @@ export function CircleEntry({ state, dispatch }: { state: State; dispatch: Dispa
         <ShapeCanvas
           ariaLabel="第 5 站 圆的入口"
           shapes={[...known, { id: "circle", points: circlePts, role: "piece" }]}
-          view={{ xMin: -0.6, xMax: 15.6, yMin: -0.8, yMax: 4.6 }}
+          view={{ xMin: -0.6, xMax: 16.4, yMin: -0.8, yMax: 4.6 }}
           actions={{
             cut: { disabled: true, onClick: () => undefined },
             move: { disabled: true, onClick: () => undefined },
@@ -46,10 +46,10 @@ export function CircleEntry({ state, dispatch }: { state: State; dispatch: Dispa
               <text className="sc-label" x={ctx.toX(0.5)} y={ctx.toY(3.4)}>
                 会算了
               </text>
-              <text className="sc-label" x={ctx.toX(11)} y={ctx.toY(3.4)}>
+              <text className="sc-label" x={ctx.toX(12.4)} y={ctx.toY(3.85)}>
                 圆呢？
               </text>
-              <text className="sc-num" x={ctx.toX(12.5)} y={ctx.toY(2) + 12} textAnchor="middle">
+              <text className="sc-num" x={ctx.toX(13.6)} y={ctx.toY(2) + 12} textAnchor="middle">
                 ?
               </text>
             </>
