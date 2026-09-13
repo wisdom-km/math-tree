@@ -162,9 +162,10 @@ describe("拼合几何派生量（真实弦长 / 弓高，不加噪声）", () =
     for (const r of [2, 3.3, 5, 6]) expect(Math.abs(gapToTrue({ ...s, r, n: 128 }))).toBeLessThan(0.02);
   });
 
-  it("数格子：r = 4 时完整 32 格；完整 + 不完整 ≥ 面积所需格数", () => {
+  it("数格子：r = 4 时完整 32 格、不完整 28 格（真实几何，不是教材约 24）", () => {
     const g = gridCount(4);
     expect(g.complete).toBe(32);
+    expect(g.partial).toBe(28);
     expect(g.complete + g.partial).toBeGreaterThan(Math.PI * 16);
     expect(g.complete).toBeLessThan(Math.PI * 16);
   });
