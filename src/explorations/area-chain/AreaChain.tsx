@@ -5,27 +5,31 @@ import { ConfirmModal } from "@/explorations/circle-circumference/components/OnS
 import type { ExplorationProps } from "@/explorations/registry";
 import { CircleEntry } from "./CircleEntry";
 import { ChainQuestionDrawer } from "./components/ChainQuestionDrawer";
+import { EmbedPreview, parseStationParam } from "./EmbedPreview";
 import { canGoNext, isShapeStation, nextStation, prevStation, questionCardVisible, stationCompleted, stationIndex } from "./model/derived";
 import { initialState, reducer } from "./model/reducer";
-import { STATIONS, STATION_TITLE, type StationId } from "./model/types";
+import { STATIONS, STATION_TITLE } from "./model/types";
 import { StationView } from "./StationView";
 import { useChainEvidence } from "./useChainEvidence";
 import "./area-chain.css";
 
-function parseStation(v: string | null): StationId {
-  return v && (STATIONS as readonly string[]).includes(v) ? (v as StationId) : "rect";
-}
-
 /**
  * 图形面积转化链（独立模式）：链顶栏 + 五站舞台 + 链条底栏。
- * 路由参数：station=rect|para|tri|trap|circle 指定进入站；play=1 沿链播放。
+ * 路由参数：station=rect|para|tri|trap|circle 指定进入站；play=1 沿链播放；embed=1 嵌入自检。
  */
 export function AreaChain({ exploration }: ExplorationProps) {
+  const route = useHashRoute();
+  const embed = route.params.get("embed");
+  if (embed) return <EmbedPreview embed={embed} />;
+  return <AreaChainIndependent exploration={exploration} />;
+}
+
+function AreaChainIndependent({ exploration }: ExplorationProps) {
   const settings = useSettings();
   const route = useHashRoute();
   const [state, dispatch] = useReducer(
     reducer,
-    { mode: settings.mode, station: parseStation(route.params.get("station")), playThrough: route.params.get("play") === "1" },
+    { mode: settings.mode, station: parseStationParam(route.params.get("station")), playThrough: route.params.get("play") === "1" },
     initialState,
   );
   const [epoch, setEpoch] = useState(0);
