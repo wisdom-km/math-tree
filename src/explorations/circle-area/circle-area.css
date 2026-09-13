@@ -1,0 +1,470 @@
+/* 「圆的面积」探究单特有样式；布局与通用控件沿用 circumference.css。
+   网格底、配色、「剪 / 移 / 拼」与转化链（area-chain.md 2.4）约定一致。 */
+
+/* ---------- 网格与舞台 ---------- */
+.grid-minor {
+  stroke: #e3e7ec;
+  stroke-width: 1;
+}
+.grid-major {
+  stroke: #c9d0d8;
+  stroke-width: 1.5;
+}
+.assembly-stage .source-outline {
+  fill: none;
+  stroke: var(--c-wheel-stroke);
+  stroke-width: 4;
+}
+.assembly-stage .source-outline.ghost {
+  stroke-dasharray: 10 10;
+  opacity: 0.35;
+}
+.assembly-stage .track {
+  fill: none;
+  stroke: var(--c-arc);
+  stroke-width: 3;
+  stroke-dasharray: 14 10;
+  opacity: 0.6;
+}
+.assembly-stage .arrow path {
+  fill: #c9d0d8;
+}
+.piece {
+  stroke: none;
+}
+.piece.odd {
+  fill: rgba(80, 140, 255, 0.55);
+}
+.piece.even {
+  fill: rgba(242, 160, 60, 0.6);
+}
+.pieces.cut .piece {
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.assembly-stage.degraded .pieces.cut .piece {
+  stroke: none;
+}
+.piece.zoomed {
+  stroke: var(--c-primary);
+  stroke-width: 4;
+}
+.seam {
+  stroke: #fff;
+  stroke-width: 3;
+  opacity: 0;
+  animation: seam-in 0.15s ease-out forwards;
+}
+@keyframes seam-in {
+  to {
+    opacity: 1;
+  }
+}
+.radius-seg {
+  stroke: var(--c-diameter);
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+.r-handle {
+  fill: var(--c-diameter);
+  stroke: #fff;
+  stroke-width: 4;
+}
+.r-handle.active {
+  fill: #ffb45c;
+}
+.frame {
+  fill: none;
+  stroke: var(--c-arc);
+  stroke-width: 4;
+  stroke-dasharray: 16 10;
+}
+.dim-line {
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.dim-line.arc {
+  stroke: var(--c-arc);
+}
+.dim-line.orange {
+  stroke: var(--c-diameter);
+}
+.dim-line.dashed {
+  stroke-dasharray: 10 8;
+}
+.svg-num.orange,
+.svg-label.orange {
+  fill: var(--c-diameter);
+}
+.svg-label.arc {
+  fill: var(--c-arc);
+}
+.svg-label.ok {
+  fill: var(--c-ok);
+}
+.edge-label {
+  cursor: pointer;
+}
+.ruler rect {
+  fill: #fff8e1;
+  stroke: #b58a4a;
+  stroke-width: 2;
+}
+.ruler line {
+  stroke: #6b4a1e;
+  stroke-width: 2;
+}
+.zoom-piece rect {
+  fill: rgba(255, 255, 255, 0.96);
+  stroke: var(--c-line);
+  stroke-width: 2;
+}
+.stage-svg-wrap.compact {
+  flex: 0 0 50%;
+}
+
+/* ---------- 控件条 ---------- */
+.area-controls {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+.area-controls .row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.small {
+  font-size: var(--fs-small);
+}
+.btn.small {
+  min-height: 2.5rem;
+  font-size: var(--fs-small);
+}
+.btn.mini {
+  min-height: 2rem;
+  min-width: 0;
+  padding: 0 0.5rem;
+  font-size: var(--fs-small);
+  margin-left: 0.5rem;
+}
+.n-segment {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.n-segment .seg {
+  min-width: 4rem;
+  font-variant-numeric: tabular-nums;
+}
+.n-segment .seg.easter .star {
+  color: var(--c-warn);
+  margin-left: 0.15rem;
+}
+.n-segment .seg-hint {
+  font-size: var(--fs-small);
+}
+.cma-bar {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  position: relative;
+}
+.cma-bar .cma {
+  min-width: 5.5rem;
+  min-height: 3.5rem;
+  font-size: var(--fs-num);
+}
+.cma-bar .cma svg {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+.cma-bar .cma.wiggle {
+  animation: wiggle 1.2s ease-in-out infinite;
+}
+.cma-bar .wiggle-hand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--c-warn);
+  font-size: var(--fs-body);
+}
+.cma-bar .wiggle-hand svg {
+  width: 4rem;
+  height: 2rem;
+}
+.svg-slider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 18rem;
+}
+.svg-slider svg {
+  width: 100%;
+  max-width: 36rem;
+  height: 5rem;
+  touch-action: none;
+}
+.svg-slider.disabled {
+  opacity: 0.45;
+}
+.svg-slider .slider-label {
+  font-size: var(--fs-body);
+  white-space: nowrap;
+}
+.slider-track {
+  fill: var(--c-line);
+}
+.slider-handle {
+  stroke: #fff;
+  stroke-width: 4;
+}
+.slider-handle.active {
+  stroke: #ffd98a;
+}
+.slider-value {
+  font-size: 28px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.slider-end {
+  font-size: 20px;
+  fill: var(--c-muted);
+}
+.route-switch {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ---------- 数据表 ---------- */
+.data-table td.len {
+  color: var(--c-arc);
+  font-weight: 700;
+}
+.data-table td.wid {
+  color: var(--c-diameter);
+}
+.data-table td.area {
+  color: var(--c-primary);
+  font-weight: 800;
+}
+.kind-icon {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-right: 0.35rem;
+  vertical-align: middle;
+  border: 2px solid var(--c-arc);
+}
+.kind-icon.tri {
+  border: 0;
+  width: 0;
+  height: 0;
+  border-left: 0.5rem solid transparent;
+  border-right: 0.5rem solid transparent;
+  border-bottom: 0.9rem solid var(--c-diameter);
+}
+
+/* ---------- 步骤 0 / 1 ---------- */
+.cell-fill {
+  fill: rgba(80, 140, 255, 0.35);
+  stroke: #fff;
+  stroke-width: 1;
+}
+.cell-fill.dim {
+  fill: rgba(80, 140, 255, 0.12);
+}
+.cell-num {
+  font-size: 18px;
+  fill: var(--c-wheel-stroke);
+}
+.recall-rect {
+  fill: none;
+  stroke: var(--c-wheel-stroke);
+  stroke-width: 5;
+}
+.recall-rect.perimeter-flow {
+  stroke: var(--c-red);
+  stroke-width: 8;
+  stroke-dasharray: 24 16;
+  animation: flow 1.2s linear infinite;
+}
+@keyframes flow {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+.recall-rect.flash {
+  animation: pulse 0.5s ease-out;
+}
+.count-cell.complete {
+  fill: rgba(80, 140, 255, 0.55);
+  stroke: #fff;
+}
+.count-cell.partial {
+  fill: rgba(242, 140, 30, 0.55);
+  stroke: #fff;
+}
+
+/* ---------- 迷你回忆（三角形） ---------- */
+.modal.tri-recall svg {
+  width: 100%;
+  height: 18rem;
+}
+.tri-first {
+  fill: rgba(80, 140, 255, 0.55);
+  stroke: var(--c-wheel-stroke);
+  stroke-width: 3;
+}
+.tri-second {
+  fill: rgba(242, 160, 60, 0.6);
+  stroke: var(--c-warn);
+  stroke-width: 3;
+  transition: all 0.6s ease;
+}
+.tri-second.ghost {
+  opacity: 0.35;
+}
+.tri-first.deep,
+.tri-second.deep {
+  fill: rgba(31, 74, 168, 0.85);
+}
+.modal .sentence {
+  font-size: var(--fs-num-lg);
+  font-weight: 700;
+  margin: 0.5rem 0;
+}
+.custom-blank {
+  width: 100%;
+  min-height: 5rem;
+  font: inherit;
+  font-size: var(--fs-num);
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--c-line);
+  border-radius: 0.5rem;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.fill-card .sentence .blank.ok {
+  color: var(--c-ok);
+  border-color: var(--c-ok);
+}
+
+/* ---------- 步骤 6 推导链 ---------- */
+.derivation .chain {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+  font-size: var(--fs-num);
+  line-height: 1.8;
+}
+.derivation .chain li {
+  opacity: 0.12;
+  transition: opacity 0.3s;
+  border-left: 4px solid var(--c-line);
+  padding-left: 0.75rem;
+}
+.derivation .chain li.shown {
+  opacity: 1;
+  border-color: var(--c-primary);
+}
+.derivation .chain li.final.shown {
+  font-size: var(--fs-num-lg);
+  color: var(--c-primary);
+}
+.derivation .row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+/* ---------- 步骤 9 ---------- */
+.extension {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.ext-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.ext-card {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  border: 2px solid var(--c-line);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background: var(--c-panel);
+  font-size: var(--fs-num);
+  min-height: 8rem;
+}
+.ext-card svg {
+  width: 10rem;
+  height: 6rem;
+  flex: none;
+}
+
+/* ---------- 迷你探究单：圆环 / 方圆 ---------- */
+.ring-fill {
+  fill: rgba(80, 140, 255, 0.55);
+}
+.ring-inner-r {
+  stroke-dasharray: 10 8;
+}
+.coef-badge {
+  margin-left: 0.35rem;
+  padding: 0.05rem 0.4rem;
+  font-size: var(--fs-small);
+  font-weight: 800;
+  color: var(--c-ok);
+  background: #e8f6e8;
+  border-radius: 0.35rem;
+  vertical-align: super;
+}
+.mini-exp .trap-card {
+  border-color: var(--c-red);
+}
+.mini-exp .choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+.mini-exp .exp-side .choice-row {
+  flex-direction: column;
+}
+.mini-exp .exp-side .choice-row .btn {
+  width: 100%;
+  flex: none;
+}
+.mini-exp .live-formula .formula {
+  font-size: var(--fs-num);
+}
+.mini-exp .exp-stage .svg-slider {
+  max-width: 48rem;
+}
+
+/* ---------- 提示 ---------- */
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  background: #fff8ec;
+  border: 1px solid #f3dcb3;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1.25rem;
+  font-size: var(--fs-body);
+  z-index: 15;
+  pointer-events: none;
+}
